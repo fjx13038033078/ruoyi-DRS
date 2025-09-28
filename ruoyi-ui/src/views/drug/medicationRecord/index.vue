@@ -356,12 +356,12 @@ export default {
     getPatientName(patientId) {
       if (!patientId) return '-'
       const patient = this.patientOptions.find(p => p.id === patientId)
-      return patient ? patient.patientName : `患者ID: ${patientId}`
+      return patient ? patient.patientName : `您暂无查看权限`
     },
     getDoctorName(patientId) {
       if (!patientId) return '-'
       const patient = this.patientOptions.find(p => p.id === patientId)
-      return patient && patient.doctorName ? patient.doctorName : '-'
+      return patient && patient.doctorName ? patient.doctorName : '您暂无查看权限'
     },
     getDrugName(drugId) {
       if (!drugId) return '-'

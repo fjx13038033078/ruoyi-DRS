@@ -27,7 +27,6 @@
     <!-- 根据user_id获取患者 -->
     <select id="selectByUserId" parameterType="Long" resultMap="PatientResultMap">
         SELECT * FROM gvp_patient WHERE user_id = #{userId}
-        LIMIT 1
     </select>
 
     <!-- 根据doctor_id获取患者 -->
