@@ -46,7 +46,7 @@ export function listStudent(query) {
   })
 }
 
-// 查询用户列表
+// 查询患者列表
 export function patientList(query) {
   return request({
     url: '/system/user/patientList',
@@ -55,7 +55,7 @@ export function patientList(query) {
   })
 }
 
-// 查询用户列表
+// 查询医生列表
 export function doctorList(query) {
   return request({
     url: '/system/user/doctorList',
