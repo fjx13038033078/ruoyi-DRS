@@ -1,0 +1,88 @@
+<navigation-bar title="患者登录" back="{{false}}" color="white" background="#007aff"></navigation-bar>
+
+<view class="container">
+  <view class="login-header">
+    <view class="logo-icon">🏥</view>
+    <text class="title">不良反应信息收集系统</text>
+    <text class="subtitle">患者登录</text>
+  </view>
+
+  <view class="login-form">
+    <view class="form-item">
+      <view class="form-label">
+        <text class="icon">👤</text>
+        <text>用户名</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入用户名"
+        value="{{username}}"
+        bindinput="onUsernameInput"
+        placeholder-class="input-placeholder"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">
+        <text class="icon">🔒</text>
+        <text>密码</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="{{showPassword ? 'text' : 'password'}}" 
+        placeholder="请输入密码"
+        value="{{password}}"
+        bindinput="onPasswordInput"
+        placeholder-class="input-placeholder"
+      />
+      <view class="password-toggle" bindtap="togglePassword">
+        <text class="toggle-icon">{{showPassword ? '👁️' : '👁️‍🗨️'}}</text>
+      </view>
+    </view>
+
+    <!-- 验证码区域 -->
+    <view class="form-item" wx:if="{{needCaptcha}}">
+      <view class="form-label">
+        <text class="icon">🔢</text>
+        <text>验证码</text>
+      </view>
+      <view class="captcha-wrapper">
+        <input 
+          class="form-input captcha-input" 
+          type="text" 
+          placeholder="请输入验证码"
+          value="{{captcha}}"
+          bindinput="onCaptchaInput"
+          placeholder-class="input-placeholder"
+        />
+        <image 
+          class="captcha-image" 
+          src="{{captchaImg}}"
+          bindtap="refreshCaptcha"
+          mode="aspectFit"
+        ></image>
+      </view>
+    </view>
+
+    <button 
+      class="login-btn {{loading ? 'loading' : ''}}" 
+      bindtap="handleLogin"
+      disabled="{{loading}}"
+    >
+      {{loading ? '登录中...' : '登录'}}
+    </button>
+
+    <view class="login-footer">
+      <text class="footer-text">患者专用登录入口</text>
+      <text class="footer-text">如有问题，请联系您的主治医师</text>
+      <view class="quick-actions">
+        <text class="action-text" bindtap="clearStorage">清除缓存</text>
+        <text class="action-divider">|</text>
+        <text class="action-text" bindtap="refreshPage">刷新页面</text>
+        <text class="action-divider">|</text>
+        <text class="action-text" bindtap="goToDebug">调试信息</text>
+      </view>
+    </view>
+  </view>
+</view>

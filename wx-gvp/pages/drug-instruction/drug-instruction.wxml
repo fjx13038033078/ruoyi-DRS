@@ -1,0 +1,51 @@
+<!--drug-instruction.wxml-->
+<navigation-bar title="{{drugName || '药品说明书'}}" back="{{true}}" color="white" background="#667eea"></navigation-bar>
+
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    <!-- 加载状态 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">正在加载说明书...</text>
+    </view>
+
+    <!-- 说明书内容 -->
+    <view class="instruction-content" wx:if="{{!loading && instruction}}">
+      <!-- 药品基本信息 -->
+      <view class="drug-header">
+        <view class="drug-icon">💊</view>
+        <view class="drug-info">
+          <text class="drug-name">{{drugName}}</text>
+          <text class="drug-version">版本：{{instruction.version || '未设置'}}</text>
+        </view>
+      </view>
+
+      <!-- 说明书内容 -->
+      <view class="content-section">
+        <view class="section-title">说明书内容</view>
+        <view class="content-text">{{instruction.content || '暂无说明书内容'}}</view>
+      </view>
+
+      <!-- 更新时间 -->
+      <view class="update-info">
+        <text class="update-label">更新时间：</text>
+        <text class="update-time">{{instruction.updateTime || '未设置'}}</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && !instruction}}">
+      <view class="empty-icon">📄</view>
+      <text class="empty-title">暂无说明书信息</text>
+      <text class="empty-desc">该药品暂无说明书内容</text>
+    </view>
+
+    <!-- 错误状态 -->
+    <view class="error-container" wx:if="{{!loading && error}}">
+      <view class="error-icon">⚠️</view>
+      <text class="error-title">加载失败</text>
+      <text class="error-desc">{{error}}</text>
+      <button class="retry-btn" bindtap="loadInstruction">重新加载</button>
+    </view>
+  </view>
+</scroll-view>

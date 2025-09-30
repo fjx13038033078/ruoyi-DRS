@@ -1,0 +1,64 @@
+<!--drug-info.wxml-->
+<navigation-bar title="药品信息" back="{{true}}" color="white" background="#667eea"></navigation-bar>
+
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    <!-- 搜索栏 -->
+    <view class="search-section">
+      <view class="search-box">
+        <text class="search-icon">🔍</text>
+        <input class="search-input" placeholder="搜索药品名称" value="{{searchKeyword}}" bindinput="onSearchInput" />
+        <button class="search-btn" bindtap="handleSearch">搜索</button>
+      </view>
+    </view>
+
+
+
+    <!-- 药品列表 -->
+    <view class="drug-list-section">
+      <view class="section-header">
+        <text class="section-title">药品列表</text>
+        <text class="section-subtitle">共{{drugList.length}}种药品</text>
+      </view>
+      
+      <view class="drug-list" wx:if="{{drugList.length > 0}}">
+        <view class="drug-item" wx:for="{{drugList}}" wx:key="id">
+          <view class="drug-image">
+            <text class="drug-placeholder">💊</text>
+          </view>
+          <view class="drug-info">
+            <text class="drug-name">{{item.drugName || item.name}}</text>
+            <text class="drug-description">{{item.description}}</text>
+            <text class="drug-indications" wx:if="{{item.indications}}">适应症：{{item.indications}}</text>
+            <text class="drug-precautions" wx:if="{{item.precautions}}">注意事项：{{item.precautions}}</text>
+          </view>
+          <view class="drug-actions">
+            <button class="action-btn detail-btn" bindtap="viewDrugDetail" data-drug="{{item}}">详情</button>
+            <button class="action-btn instruction-btn" bindtap="viewDrugInstruction" data-drug="{{item}}">说明书</button>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{drugList.length === 0 && !loading}}">
+        <view class="empty-icon">💊</view>
+        <text class="empty-title">暂无药品信息</text>
+        <text class="empty-desc">请尝试其他搜索条件</text>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">正在加载药品信息...</text>
+    </view>
+
+    <!-- 错误状态 -->
+    <view class="error-container" wx:if="{{!loading && error}}">
+      <view class="error-icon">⚠️</view>
+      <text class="error-title">加载失败</text>
+      <text class="error-desc">{{error}}</text>
+      <button class="retry-btn" bindtap="loadDrugList">重新加载</button>
+    </view>
+  </view>
+</scroll-view>

@@ -1,0 +1,147 @@
+<!--medication-check.wxml-->
+<navigation-bar title="用药打卡" back="{{true}}" color="white" background="#667eea"></navigation-bar>
+
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    
+    <!-- 加载状态 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">正在加载数据...</text>
+    </view>
+
+    <!-- 错误状态 -->
+    <view class="error-container" wx:if="{{!loading && error}}">
+      <view class="error-icon">⚠️</view>
+      <text class="error-title">加载失败</text>
+      <text class="error-desc">{{error}}</text>
+      <button class="retry-btn" bindtap="loadData">重新加载</button>
+    </view>
+
+    <!-- 主要内容 -->
+    <view wx:if="{{!loading && !error}}">
+      <!-- 今日状态 -->
+      <view class="today-status">
+        <view class="status-header">
+          <text class="status-title">用药打卡</text>
+          <text class="status-date">{{todayDate}}</text>
+        </view>
+        <view class="status-desc">
+          <text class="desc-text">记录您的用药情况，帮助医生更好地了解治疗效果</text>
+        </view>
+      </view>
+
+      <!-- 用药记录 -->
+      <view class="medication-records">
+        <view class="section-header">
+          <text class="section-title">我的用药记录</text>
+          <text class="section-subtitle">共{{medicationRecords.length}}条记录</text>
+        </view>
+        
+        <view class="record-list" wx:if="{{medicationRecords.length > 0}}">
+          <view class="record-item" wx:for="{{medicationRecords}}" wx:key="id">
+            <view class="record-info">
+              <text class="drug-name">{{item.drugName || '未知药品'}}</text>
+              <text class="drug-dosage">剂量：{{item.dosage}}</text>
+              <text class="drug-frequency">频率：{{item.frequency}}</text>
+              <view class="drug-dates">
+                <text class="start-date">开始：{{item.startDate}}</text>
+                <text class="end-date" wx:if="{{item.endDate}}">结束：{{item.endDate}}</text>
+              </view>
+            </view>
+            <view class="record-actions">
+              <button class="checkin-btn" bindtap="showAddLogForm" data-record="{{item}}">
+                <text class="btn-text">打卡</text>
+              </button>
+            </view>
+          </view>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{medicationRecords.length === 0}}">
+          <view class="empty-icon">💊</view>
+          <text class="empty-title">暂无用药记录</text>
+          <text class="empty-desc">请联系医生添加用药计划</text>
+        </view>
+      </view>
+
+      <!-- 打卡记录 -->
+      <view class="checkin-logs">
+        <view class="section-header">
+          <text class="section-title">打卡记录</text>
+          <text class="section-subtitle">共{{medicationLogs.length}}条记录</text>
+        </view>
+        
+        <view class="log-list" wx:if="{{medicationLogs.length > 0}}">
+          <view class="log-item" wx:for="{{medicationLogs}}" wx:key="id" bindtap="viewLogDetail" data-log="{{item}}">
+            <view class="log-status" style="background-color: {{item.isTaken === 1 ? '#52c41a' : '#ff4d4f'}}">
+              <text class="status-icon">{{item.isTaken === 1 ? '✓' : '✗'}}</text>
+            </view>
+            <view class="log-info">
+              <text class="log-record">记录ID：{{item.recordId}}</text>
+              <text class="log-time">时间：{{item.takeTime}}</text>
+              <text class="log-status-text" style="color: {{item.isTaken === 1 ? '#52c41a' : '#ff4d4f'}}">
+                {{item.isTaken === 1 ? '已服药' : '未服药'}}
+              </text>
+            </view>
+            <view class="log-arrow">
+              <text class="arrow-icon">›</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{medicationLogs.length === 0}}">
+          <view class="empty-icon">📋</view>
+          <text class="empty-title">暂无打卡记录</text>
+          <text class="empty-desc">开始记录您的用药情况</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>
+
+<!-- 添加打卡表单弹窗 -->
+<view class="form-modal" wx:if="{{showAddLogForm}}">
+  <view class="modal-mask" bindtap="hideAddLogForm"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">用药打卡</text>
+      <text class="modal-close" bindtap="hideAddLogForm">×</text>
+    </view>
+    
+    <view class="form-content">
+      <!-- 药品信息 -->
+      <view class="form-item">
+        <text class="form-label">药品名称</text>
+        <view class="form-display">
+          <text class="display-text">{{formData.drugName}}</text>
+        </view>
+      </view>
+
+      <!-- 服药状态 -->
+      <view class="form-item">
+        <text class="form-label">服药状态 *</text>
+        <view class="form-input" bindtap="selectTakenStatus">
+          <text class="input-text">{{formData.isTaken === 1 ? '已服药' : '未服药'}}</text>
+          <text class="input-arrow">›</text>
+        </view>
+      </view>
+
+      <!-- 服药时间 -->
+      <view class="form-item">
+        <text class="form-label">服药时间 *</text>
+        <view class="form-input" bindtap="selectTakeTime">
+          <text class="input-text" wx:if="{{formData.takeTime}}">{{formData.takeTime}}</text>
+          <text class="input-placeholder" wx:else>请选择服药时间</text>
+          <text class="input-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="modal-footer">
+      <button class="btn-cancel" bindtap="hideAddLogForm">取消</button>
+      <button class="btn-submit" bindtap="submitLog">提交</button>
+    </view>
+  </view>
+</view>

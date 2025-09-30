@@ -1,0 +1,101 @@
+<!--index.wxml-->
+<navigation-bar title="不良反应信息收集" back="{{false}}" color="white" background="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    <!-- 欢迎横幅 -->
+    <view class="welcome-banner">
+      <view class="banner-content">
+        <text class="welcome-text">欢迎回来</text>
+        <text class="welcome-subtitle">不良反应信息收集系统</text>
+      </view>
+      <view class="banner-decoration">
+        <view class="decoration-circle circle-1"></view>
+        <view class="decoration-circle circle-2"></view>
+        <view class="decoration-circle circle-3"></view>
+      </view>
+    </view>
+
+    <!-- 用户信息卡片 -->
+    <view class="user-card" wx:if="{{isLogin && userInfo}}">
+      <view class="user-card-bg"></view>
+      <view class="user-content">
+        <view class="user-avatar">
+          <text class="avatar-text">{{userInfo.nickName ? userInfo.nickName.charAt(0) : '患'}}</text>
+        </view>
+        <view class="user-info">
+          <text class="user-name">{{userInfo.nickName || userInfo.userName || '患者'}}</text>
+          <text class="user-role">患者用户</text>
+          <view class="user-status">
+            <view class="status-dot"></view>
+            <text class="status-text">在线</text>
+          </view>
+        </view>
+        <view class="logout-btn" bindtap="handleLogout">
+          <text class="logout-icon">🚪</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能导航 -->
+    <view class="function-nav">
+      <view class="nav-header">
+        <text class="nav-title">功能导航</text>
+        <text class="nav-subtitle">点击底部导航栏切换功能</text>
+      </view>
+      <view class="nav-grid">
+        <view class="nav-item" bindtap="switchTab" data-tab="medical-record">
+          <view class="nav-icon-wrapper medical-bg">
+            <text class="nav-icon">📄</text>
+          </view>
+          <text class="nav-text">我的病历</text>
+        </view>
+        <view class="nav-item" bindtap="switchTab" data-tab="drug-info">
+          <view class="nav-icon-wrapper drug-bg">
+            <text class="nav-icon">💊</text>
+          </view>
+          <text class="nav-text">药品信息</text>
+        </view>
+        <view class="nav-item" bindtap="switchTab" data-tab="medication-check">
+          <view class="nav-icon-wrapper check-bg">
+            <text class="nav-icon">✅</text>
+          </view>
+          <text class="nav-text">用药打卡</text>
+        </view>
+        <view class="nav-item" bindtap="switchTab" data-tab="adverse-reaction">
+          <view class="nav-icon-wrapper reaction-bg">
+            <text class="nav-icon">⚠️</text>
+          </view>
+          <text class="nav-text">不良反应</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 快速提示 -->
+    <view class="quick-tips">
+      <view class="tips-header">
+        <text class="tips-icon">💡</text>
+        <text class="tips-title">温馨提示</text>
+      </view>
+      <view class="tips-content">
+        <view class="tip-item">
+          <view class="tip-icon">📝</view>
+          <text class="tip-text">请及时记录用药情况</text>
+        </view>
+        <view class="tip-item">
+          <view class="tip-icon">🚨</view>
+          <text class="tip-text">如有不良反应请立即上报</text>
+        </view>
+        <view class="tip-item">
+          <view class="tip-icon">👨‍⚕️</view>
+          <text class="tip-text">如有疑问请联系您的主治医师</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部装饰 -->
+    <view class="bottom-decoration">
+      <view class="wave wave-1"></view>
+      <view class="wave wave-2"></view>
+    </view>
+  </view>
+</scroll-view>

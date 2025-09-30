@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar"
+  },
+  "navigationBarTitleText": "我的病历",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}

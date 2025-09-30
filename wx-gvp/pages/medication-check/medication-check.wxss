@@ -1,0 +1,562 @@
+/* medication-check.wxss */
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  width: 100%;
+  overflow: hidden;
+}
+
+.scrollarea {
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 20rpx 30rpx;
+  min-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #e1e5e9;
+  border-top: 4rpx solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 30rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 错误状态 */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.error-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff4d4f;
+  margin-bottom: 10rpx;
+}
+
+.error-desc {
+  font-size: 28rpx;
+  color: #ff4d4f;
+  margin-bottom: 40rpx;
+  line-height: 1.5;
+}
+
+.retry-btn {
+  padding: 20rpx 40rpx;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 25rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.retry-btn:active {
+  opacity: 0.8;
+}
+
+/* 今日状态 */
+.today-status {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  color: #fff;
+  box-shadow: 0 8rpx 32rpx rgba(102, 126, 234, 0.3);
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.status-title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.status-date {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.status-desc {
+  margin-top: 15rpx;
+}
+
+.desc-text {
+  font-size: 24rpx;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* 通用样式 */
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+  padding-bottom: 15rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.section-subtitle {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 用药记录 */
+.medication-records {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 25rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  border: 2rpx solid #f0f0f0;
+  transition: all 0.3s;
+  gap: 15rpx;
+}
+
+.record-item:active {
+  border-color: #667eea;
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 25rpx rgba(102, 126, 234, 0.15);
+}
+
+.record-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  padding-right: 5rpx;
+}
+
+.drug-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.drug-dosage {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.drug-frequency {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.drug-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.start-date, .end-date {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.record-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.checkin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rpx 2rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6rpx;
+  font-size: 16rpx;
+  font-weight: bold;
+  width: 42rpx;
+  height: 44rpx;
+  box-sizing: border-box;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.checkin-btn:active {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+.btn-icon {
+  display: none;
+}
+
+.btn-text {
+  font-size: 16rpx;
+  line-height: 1;
+  margin: 0;
+  font-weight: bold;
+  text-align: center;
+  transform: scaleX(0.9);
+  letter-spacing: -0.5rpx;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 打卡记录 */
+.checkin-logs {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 25rpx;
+  margin-top: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.log-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  border: 2rpx solid #f0f0f0;
+  transition: all 0.3s;
+}
+
+.log-item:active {
+  border-color: #667eea;
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 25rpx rgba(102, 126, 234, 0.15);
+}
+
+.log-status {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.status-icon {
+  font-size: 24rpx;
+  color: #fff;
+}
+
+.log-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.log-record {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.log-time {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.log-status-text {
+  font-size: 22rpx;
+  font-weight: bold;
+}
+
+.log-arrow {
+  margin-left: 15rpx;
+  flex-shrink: 0;
+}
+
+.arrow-icon {
+  font-size: 32rpx;
+  color: #ccc;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 表单弹窗 */
+.form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 600rpx;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 40rpx;
+  color: #999;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:active {
+  background: #f0f0f0;
+  border-radius: 50%;
+}
+
+.form-content {
+  flex: 1;
+  padding: 30rpx;
+  overflow-y: auto;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.form-display {
+  padding: 20rpx;
+  background: #f8f9fa;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  min-height: 80rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.display-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.form-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  min-height: 80rpx;
+  box-sizing: border-box;
+}
+
+.form-input:active {
+  border-color: #667eea;
+  background: #f0f2ff;
+}
+
+.input-text {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+}
+
+.input-placeholder {
+  font-size: 28rpx;
+  color: #999;
+  flex: 1;
+}
+
+.input-arrow {
+  font-size: 32rpx;
+  color: #ccc;
+  margin-left: 15rpx;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 30rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.btn-cancel {
+  flex: 1;
+  height: 80rpx;
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.btn-cancel:active {
+  background: #e0e0e0;
+}
+
+.btn-submit {
+  flex: 1;
+  height: 80rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.btn-submit:active {
+  opacity: 0.8;
+}

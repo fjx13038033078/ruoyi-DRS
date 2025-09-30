@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar"
+  },
+  "navigationBarTitleText": "不良反应",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}
