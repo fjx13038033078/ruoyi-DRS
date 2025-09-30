@@ -87,7 +87,7 @@
       <!-- 对话框内容 -->
       <div>
         <el-form :model="adverseReactionForm" label-width="120px" :rules="formRules" ref="adverseReactionForm">
-          <el-form-item label="患者" prop="patientId">
+          <el-form-item label="患者" prop="patientId" v-if="!isPatientRole">
             <el-select v-model="adverseReactionForm.patientId" :disabled="isReadOnly" placeholder="请选择患者" clearable filterable>
               <el-option
                 v-for="patient in patientOptions"
@@ -96,6 +96,9 @@
                 :value="patient.id"
               ></el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="患者" v-if="isPatientRole && isReadOnly">
+            <span>{{ getCurrentPatientName() }}</span>
           </el-form-item>
           <el-form-item label="药品" prop="drugId">
             <el-select v-model="adverseReactionForm.drugId" :disabled="isReadOnly" placeholder="请选择药品" clearable filterable>
@@ -181,7 +184,7 @@ export default {
       // 表单验证规则
       formRules: {
         patientId: [
-          { required: true, message: '请选择患者', trigger: 'change' }
+          { required: false, message: '请选择患者', trigger: 'change' }
         ],
         drugId: [
           { required: true, message: '请选择药品', trigger: 'change' }
@@ -203,9 +206,13 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      // 当前用户角色
+      isPatientRole: false,
     }
   },
   created() {
+    // 检查当前用户角色
+    this.checkUserRole()
     // 先加载基础数据，再加载不良反应列表
     Promise.all([
       this.fetchPatientOptions(),
@@ -266,6 +273,32 @@ export default {
       const doctor = this.doctorOptions.find(d => d.userId === doctorId)
       return doctor ? doctor.nickName : (this.doctorOptions.length === 0 ? '加载中...' : `医生ID: ${doctorId}`)
     },
+    checkUserRole() {
+      // 从store中获取当前用户角色
+      const roles = this.$store.getters.roles || []
+      this.isPatientRole = roles.includes('patient')
+      // 根据角色动态设置验证规则
+      this.updateFormRules()
+    },
+    updateFormRules() {
+      // 动态更新表单验证规则
+      if (this.isPatientRole) {
+        // 患者角色不需要验证patientId
+        this.formRules.patientId = [
+          { required: false, message: '请选择患者', trigger: 'change' }
+        ]
+      } else {
+        // 管理员和医生角色需要验证patientId
+        this.formRules.patientId = [
+          { required: true, message: '请选择患者', trigger: 'change' }
+        ]
+      }
+    },
+    getCurrentPatientName() {
+      // 获取当前登录用户的姓名
+      const user = this.$store.getters.user || {}
+      return user.nickName || user.userName || '当前用户'
+    },
     getSeverityType(severity) {
       switch (severity) {
         case '轻微': return 'info'
@@ -287,6 +320,10 @@ export default {
       this.isReadOnly = false
       this.dialogTitle = '新增不良反应'
       this.dialogButtonText = '添加'
+      // 如果是患者角色，不需要设置patientId，后端会自动处理
+      if (!this.isPatientRole) {
+        this.adverseReactionForm.patientId = null
+      }
       this.dialogVisible = true
     },
     handleEdit(row) {
@@ -337,7 +374,7 @@ export default {
     clearForm() {
       this.adverseReactionForm = {
         id: null,
-        patientId: null,
+        patientId: this.isPatientRole ? undefined : null, // 患者角色时不设置patientId
         drugId: null,
         description: '',
         severity: '',
@@ -347,8 +384,16 @@ export default {
     handleSubmit() {
       this.$refs.adverseReactionForm.validate((valid) => {
         if (valid) {
+          // 准备提交数据
+          const submitData = { ...this.adverseReactionForm }
+          
+          // 如果是患者角色，不发送patientId，让后端自动处理
+          if (this.isPatientRole) {
+            delete submitData.patientId
+          }
+          
           if (this.dialogButtonText === '添加') {
-            addAdverseReaction(this.adverseReactionForm).then(() => {
+            addAdverseReaction(submitData).then(() => {
               this.$message.success('添加成功')
               this.dialogVisible = false
               this.clearForm()
@@ -358,7 +403,7 @@ export default {
               this.$message.error('添加失败，请检查数据')
             })
           } else if (this.dialogButtonText === '更新') {
-            updateAdverseReaction(this.adverseReactionForm).then(() => {
+            updateAdverseReaction(submitData).then(() => {
               this.$message.success('更新成功')
               this.dialogVisible = false
               this.clearForm()

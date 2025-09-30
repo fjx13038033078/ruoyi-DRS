@@ -76,10 +76,18 @@ public class AdverseReactionServiceImpl  implements AdverseReactionService {
 
     @Override
     public boolean addAdverseReaction(AdverseReaction adverseReaction) {
+        Long userId = SecurityUtils.getUserId();
+        String role = iSysRoleService.selectStringRoleByUserId(userId);
+        if (role.equalsIgnoreCase("doctor") || role.equalsIgnoreCase("admin")) {
+            Long patientId = adverseReaction.getPatientId();
+            Patient patientByUserId = patientService.getPatientByUserId(patientId);
+            adverseReaction.setDoctorId(patientByUserId.getDoctorId());
+        } else {
+            adverseReaction.setPatientId(userId);
+            Patient patientByUserId = patientService.getPatientByUserId(userId);
+            adverseReaction.setDoctorId(patientByUserId.getDoctorId());
+        }
         adverseReaction.setDoctorConfirmed(0);
-        Long patientId = adverseReaction.getPatientId();
-        Patient patientByUserId = patientService.getPatientByUserId(patientId);
-        adverseReaction.setDoctorId(patientByUserId.getDoctorId());
         int rows = adverseReactionMapper.addAdverseReaction(adverseReaction);
         return rows > 0;
     }

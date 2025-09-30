@@ -337,7 +337,7 @@ export default {
     fetchPatientOptions() {
       listAllPatients({pageNum: 1, pageSize: 1000}).then(response => {
         this.patientOptions = response.rows.map(patient => ({
-          id: patient.id,
+          id: patient.userId,
           patientName: patient.patientName || `患者${patient.id}`, // 使用真实姓名，如果没有则用默认格式
           medicalRecordNo: patient.medicalRecordNo,
           doctorId: patient.doctorId,
