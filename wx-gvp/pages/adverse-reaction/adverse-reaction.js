@@ -2,8 +2,9 @@
 const app = getApp()
 const adverseReactionApi = require('../../api/adverseReaction')
 const drugApi = require('../../api/drug')
+const { withAuth } = require('../../utils/page-auth')
 
-Page({
+Page(withAuth({
   data: {
     // 不良反应记录列表
     reportList: [],
@@ -41,7 +42,13 @@ Page({
   },
 
   onShow() {
-    this.checkLoginStatus()
+    // 检查登录状态并重新加载数据
+    if (this.checkLoginStatus()) {
+      // 如果有错误或显示认证提示，重新加载
+      if (this.data.error || this.data.showAuthTip) {
+        this.loadData()
+      }
+    }
   },
 
   onPullDownRefresh() {
@@ -94,10 +101,8 @@ Page({
       await this.loadDrugList()
 
     } catch (error) {
-      console.error('加载数据失败:', error)
-      this.setData({
-        error: error.msg || error.message || '加载失败，请检查网络连接'
-      })
+      // 使用统一的错误处理
+      this.handleApiError(error)
     } finally {
       this.setData({ loading: false })
     }
@@ -363,4 +368,9 @@ Page({
     })
   },
 
-})
+  // 重新加载
+  retryLoad() {
+    this.loadData()
+  }
+
+}))

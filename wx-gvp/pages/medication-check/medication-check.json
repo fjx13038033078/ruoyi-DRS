@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "navigation-bar": "/components/navigation-bar/navigation-bar"
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "auth-tip": "/components/auth-tip/auth-tip"
   },
   "navigationBarTitleText": "用药打卡",
   "enablePullDownRefresh": true,

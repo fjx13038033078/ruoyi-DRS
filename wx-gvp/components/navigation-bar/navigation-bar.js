@@ -59,17 +59,37 @@ Component({
   },
   lifetimes: {
     attached() {
-      const rect = wx.getMenuButtonBoundingClientRect()
-      const platform = (wx.getDeviceInfo() || wx.getSystemInfoSync()).platform
-      const isAndroid = platform === 'android'
-      const isDevtools = platform === 'devtools'
-      const { windowWidth, safeArea: { top = 0, bottom = 0 } = {} } = wx.getWindowInfo() || wx.getSystemInfoSync()
-      this.setData({
-        ios: !isAndroid,
-        innerPaddingRight: `padding-right: ${windowWidth - rect.left}px`,
-        leftWidth: `width: ${windowWidth - rect.left}px`,
-        safeAreaTop: isDevtools || isAndroid ? `height: calc(var(--height) + ${top}px); padding-top: ${top}px` : ``
-      })
+      try {
+        // 获取胶囊按钮位置信息
+        const rect = wx.getMenuButtonBoundingClientRect() || { left: 0 }
+        
+        // 获取系统信息（兼容所有版本）
+        const systemInfo = wx.getSystemInfoSync() || {}
+        const platform = systemInfo.platform || 'ios'
+        const isAndroid = platform === 'android'
+        const isDevtools = platform === 'devtools'
+        
+        // 获取窗口宽度和安全区域
+        const windowWidth = systemInfo.windowWidth || 375
+        const safeArea = systemInfo.safeArea || {}
+        const top = safeArea.top || 0
+        
+        this.setData({
+          ios: !isAndroid,
+          innerPaddingRight: `padding-right: ${windowWidth - rect.left}px`,
+          leftWidth: `width: ${windowWidth - rect.left}px`,
+          safeAreaTop: isDevtools || isAndroid ? `height: calc(var(--height) + ${top}px); padding-top: ${top}px` : ``
+        })
+      } catch (error) {
+        console.error('导航栏初始化失败:', error)
+        // 设置默认值
+        this.setData({
+          ios: true,
+          innerPaddingRight: 'padding-right: 87px',
+          leftWidth: 'width: 87px',
+          safeAreaTop: ''
+        })
+      }
     },
   },
   /**

@@ -15,7 +15,7 @@
       <view class="error-icon">⚠️</view>
       <text class="error-title">加载失败</text>
       <text class="error-desc">{{error}}</text>
-      <button class="retry-btn" bindtap="loadData">重新加载</button>
+      <button class="retry-btn" bindtap="retryLoad">重新加载</button>
     </view>
 
     <!-- 主要内容 -->
@@ -145,3 +145,6 @@
     </view>
   </view>
 </view>
+
+<!-- 认证失败提示 -->
+<auth-tip show="{{showAuthTip}}" bind:relogin="handleReLogin"></auth-tip>

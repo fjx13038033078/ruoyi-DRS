@@ -1,0 +1,10 @@
+<!-- 认证失败提示组件 -->
+<view class="auth-tip-container" wx:if="{{show}}">
+  <view class="auth-tip-content">
+    <view class="auth-tip-icon">🔒</view>
+    <text class="auth-tip-title">登录已过期</text>
+    <text class="auth-tip-desc">您的登录可能已过期，请重新登录</text>
+    <button class="auth-tip-btn" bindtap="handleReLogin">立即重新登录</button>
+  </view>
+</view>
+

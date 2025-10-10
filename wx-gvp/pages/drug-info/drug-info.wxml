@@ -12,10 +12,8 @@
       </view>
     </view>
 
-
-
     <!-- 药品列表 -->
-    <view class="drug-list-section">
+    <view class="drug-list-section" wx:if="{{!loading && !error}}">
       <view class="section-header">
         <text class="section-title">药品列表</text>
         <text class="section-subtitle">共{{drugList.length}}种药品</text>
@@ -40,17 +38,11 @@
       </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" wx:if="{{drugList.length === 0 && !loading}}">
+      <view class="empty-state" wx:if="{{drugList.length === 0}}">
         <view class="empty-icon">💊</view>
         <text class="empty-title">暂无药品信息</text>
         <text class="empty-desc">请尝试其他搜索条件</text>
       </view>
-    </view>
-
-    <!-- 加载状态 -->
-    <view class="loading-container" wx:if="{{loading}}">
-      <view class="loading-spinner"></view>
-      <text class="loading-text">正在加载药品信息...</text>
     </view>
 
     <!-- 错误状态 -->
@@ -58,7 +50,16 @@
       <view class="error-icon">⚠️</view>
       <text class="error-title">加载失败</text>
       <text class="error-desc">{{error}}</text>
-      <button class="retry-btn" bindtap="loadDrugList">重新加载</button>
+      <button class="retry-btn" bindtap="retryLoad">重新加载</button>
     </view>
   </view>
 </scroll-view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">正在加载药品信息...</text>
+</view>
+
+<!-- 认证失败提示 -->
+<auth-tip show="{{showAuthTip}}" bind:relogin="handleReLogin"></auth-tip>

@@ -2,8 +2,9 @@
 const app = getApp()
 const medicationRecordApi = require('../../api/medicationRecord')
 const medicationLogApi = require('../../api/medicationLog')
+const { withAuth } = require('../../utils/page-auth')
 
-Page({
+Page(withAuth({
   data: {
     // 当前日期
     todayDate: '',
@@ -38,8 +39,16 @@ Page({
   },
 
   onShow() {
-    this.checkLoginStatus()
-    this.loadData()
+    // 检查登录状态并重新加载数据
+    if (this.checkLoginStatus()) {
+      // 如果有错误或显示认证提示，重新加载
+      if (this.data.error || this.data.showAuthTip) {
+        this.loadData()
+      } else {
+        // 正常刷新数据
+        this.loadData()
+      }
+    }
   },
 
   onPullDownRefresh() {
@@ -102,10 +111,8 @@ Page({
       await this.loadMedicationLogs()
 
     } catch (error) {
-      console.error('加载数据失败:', error)
-      this.setData({
-        error: error.msg || error.message || '加载失败，请检查网络连接'
-      })
+      // 使用统一的错误处理
+      this.handleApiError(error)
     } finally {
       this.setData({ loading: false })
     }
@@ -314,5 +321,9 @@ Page({
     })
   },
 
+  // 重新加载
+  retryLoad() {
+    this.loadData()
+  }
 
-})
+}))

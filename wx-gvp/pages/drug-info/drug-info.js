@@ -1,8 +1,9 @@
 // pages/drug-info/drug-info.js
 const app = getApp()
 const drugApi = require('../../api/drug')
+const { withAuth } = require('../../utils/page-auth')
 
-Page({
+Page(withAuth({
   data: {
     searchKeyword: '',
     drugList: [],
@@ -19,7 +20,13 @@ Page({
   },
 
   onShow() {
-    this.checkLoginStatus()
+    // 检查登录状态并重新加载数据
+    if (this.checkLoginStatus()) {
+      // 如果有错误或显示认证提示，重新加载
+      if (this.data.error || this.data.showAuthTip) {
+        this.loadDrugList()
+      }
+    }
   },
 
   onPullDownRefresh() {
@@ -78,15 +85,16 @@ Page({
       this.filterDrugs()
 
     } catch (error) {
-      console.error('加载药品列表失败:', error)
-      this.setData({
-        loading: false,
-        error: error.msg || error.message || '网络请求失败，请检查网络连接'
-      })
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
-      })
+      // 使用统一的错误处理
+      this.handleApiError(error)
+      
+      // 如果不是401错误，显示toast
+      if (error.code !== 401 && error.statusCode !== 401) {
+        wx.showToast({
+          title: '加载失败',
+          icon: 'none'
+        })
+      }
     }
   },
 
@@ -176,4 +184,9 @@ Page({
     })
   },
 
-})
+  // 重新加载
+  retryLoad() {
+    this.loadDrugList()
+  }
+
+}))
