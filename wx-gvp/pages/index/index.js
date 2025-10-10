@@ -32,6 +32,8 @@ Page({
 
     // 已登录，获取用户信息
     const userInfo = app.getUserInfo()
+    console.log('首页获取到的用户信息:', userInfo)
+    
     this.setData({
       isLogin: true,
       userInfo: userInfo

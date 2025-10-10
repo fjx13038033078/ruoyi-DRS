@@ -1,4 +1,6 @@
 // app.js
+const { processUserAvatar } = require('./utils/avatar')
+
 App({
   globalData: {
     userInfo: null,
@@ -16,10 +18,15 @@ App({
     const token = wx.getStorageSync('token')
     const userInfo = wx.getStorageSync('userInfo')
     
+    console.log('从缓存读取的token:', token)
+    console.log('从缓存读取的userInfo:', userInfo)
+    
     if (token && userInfo) {
       this.globalData.token = token
-      this.globalData.userInfo = userInfo
+      // 确保头像URL已处理
+      this.globalData.userInfo = processUserAvatar(userInfo)
       this.globalData.isLogin = true
+      console.log('设置到globalData的userInfo:', this.globalData.userInfo)
     } else {
       this.globalData.isLogin = false
     }
@@ -30,12 +37,13 @@ App({
   // 设置登录状态
   setLoginStatus(token, userInfo) {
     this.globalData.token = token
-    this.globalData.userInfo = userInfo
+    // 处理用户头像URL
+    this.globalData.userInfo = processUserAvatar(userInfo)
     this.globalData.isLogin = true
     
     // 持久化存储
     wx.setStorageSync('token', token)
-    wx.setStorageSync('userInfo', userInfo)
+    wx.setStorageSync('userInfo', this.globalData.userInfo)
   },
 
   // 清除登录状态

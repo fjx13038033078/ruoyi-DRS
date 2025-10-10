@@ -1,5 +1,6 @@
 // pages/login/login.js
 const authApi = require('../../api/auth')
+const { processUserAvatar } = require('../../utils/avatar')
 const app = getApp()
 
 Page({
@@ -152,7 +153,8 @@ Page({
         const userInfoRes = await authApi.getUserInfo()
         
         if (userInfoRes.code === 200) {
-          const userInfo = userInfoRes.user
+          // 处理用户头像URL
+          const userInfo = processUserAvatar(userInfoRes.user)
           const roles = userInfoRes.roles || []
           
           // 检查用户角色，确保是患者
