@@ -6,8 +6,7 @@
     "pages/drug-info/drug-info",
     "pages/drug-instruction/drug-instruction",
     "pages/medication-check/medication-check",
-    "pages/adverse-reaction/adverse-reaction",
-    "pages/debug/debug"
+    "pages/adverse-reaction/adverse-reaction"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -22,23 +21,33 @@
     "list": [
       {
         "pagePath": "pages/medical-record/medical-record",
-        "text": "我的病历"
+        "text": "我的病历",
+        "iconPath": "assets/icons/tabbar/medical-record.png",
+        "selectedIconPath": "assets/icons/tabbar/medical-record-active.png"
       },
       {
         "pagePath": "pages/drug-info/drug-info",
-        "text": "药品信息"
+        "text": "药品信息",
+        "iconPath": "assets/icons/tabbar/drug-info.png",
+        "selectedIconPath": "assets/icons/tabbar/drug-info-active.png"
       },
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "assets/icons/tabbar/home.png",
+        "selectedIconPath": "assets/icons/tabbar/home-active.png"
       },
       {
         "pagePath": "pages/medication-check/medication-check",
-        "text": "用药打卡"
+        "text": "用药打卡",
+        "iconPath": "assets/icons/tabbar/medication-check.png",
+        "selectedIconPath": "assets/icons/tabbar/medication-check-active.png"
       },
       {
         "pagePath": "pages/adverse-reaction/adverse-reaction",
-        "text": "不良反应"
+        "text": "不良反应",
+        "iconPath": "assets/icons/tabbar/adverse-reaction.png",
+        "selectedIconPath": "assets/icons/tabbar/adverse-reaction-active.png"
       }
     ]
   },
