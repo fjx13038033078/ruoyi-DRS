@@ -31,28 +31,72 @@
         </view>
       </view>
 
-      <!-- 用药记录 -->
+      <!-- 用药记录和打卡记录（分组显示） -->
       <view class="medication-records">
         <view class="section-header">
           <text class="section-title">我的用药记录</text>
           <text class="section-subtitle">共{{medicationRecords.length}}条记录</text>
         </view>
         
+        <!-- 有用药记录时 -->
         <view class="record-list" wx:if="{{medicationRecords.length > 0}}">
-          <view class="record-item" wx:for="{{medicationRecords}}" wx:key="id">
-            <view class="record-info">
-              <text class="drug-name">{{item.drugName || '未知药品'}}</text>
-              <text class="drug-dosage">剂量：{{item.dosage}}</text>
-              <text class="drug-frequency">频率：{{item.frequency}}</text>
-              <view class="drug-dates">
-                <text class="start-date">开始：{{item.startDate}}</text>
-                <text class="end-date" wx:if="{{item.endDate}}">结束：{{item.endDate}}</text>
+          <view class="record-group" wx:for="{{medicationRecords}}" wx:key="id" wx:for-item="record">
+            <!-- 用药记录卡片 -->
+            <view class="record-item">
+              <view class="record-header">
+                <view class="drug-icon">💊</view>
+                <view class="record-main-info">
+                  <text class="drug-name">{{record.drugName || '未知药品'}}</text>
+                  <view class="drug-meta">
+                    <text class="meta-tag">{{record.dosage}}</text>
+                    <text class="meta-divider">·</text>
+                    <text class="meta-tag">{{record.frequency}}</text>
+                  </view>
+                </view>
               </view>
-            </view>
-            <view class="record-actions">
-              <button class="checkin-btn" bindtap="showAddLogForm" data-record="{{item}}">
-                <text class="btn-text">打卡</text>
+              
+              <view class="drug-dates">
+                <view class="date-item">
+                  <text class="date-label">开始</text>
+                  <text class="date-value">{{record.startDate}}</text>
+                </view>
+                <view class="date-item" wx:if="{{record.endDate}}">
+                  <text class="date-label">结束</text>
+                  <text class="date-value">{{record.endDate}}</text>
+                </view>
+              </view>
+              
+              <button class="checkin-btn" bindtap="showAddLogForm" data-record="{{record}}">
+                <text class="btn-icon">✓</text>
+                <text class="btn-text">立即打卡</text>
               </button>
+            </view>
+
+            <!-- 该用药记录的打卡历史 -->
+            <view class="record-logs" wx:if="{{record.logs && record.logs.length > 0}}">
+              <view class="logs-header">
+                <text class="logs-title">📋 打卡历史（{{record.logs.length}}条）</text>
+                <view class="logs-toggle" bindtap="toggleLogs" data-record-id="{{record.id}}">
+                  {{record.showLogs ? '收起' : '展开'}}
+                </view>
+              </view>
+              
+              <view class="log-list" wx:if="{{record.showLogs}}">
+                <view class="log-item" wx:for="{{record.logs}}" wx:key="id" wx:for-item="log" bindtap="viewLogDetail" data-log="{{log}}">
+                  <view class="log-status" style="background-color: {{log.isTaken === 1 ? '#52c41a' : '#ff4d4f'}}">
+                    <text class="status-icon">{{log.isTaken === 1 ? '✓' : '✗'}}</text>
+                  </view>
+                  <view class="log-info">
+                    <text class="log-time">{{log.takeTime}}</text>
+                    <text class="log-status-text" style="color: {{log.isTaken === 1 ? '#52c41a' : '#ff4d4f'}}">
+                      {{log.isTaken === 1 ? '已服药' : '未服药'}}
+                    </text>
+                  </view>
+                  <view class="log-arrow">
+                    <text class="arrow-icon">›</text>
+                  </view>
+                </view>
+              </view>
             </view>
           </view>
         </view>
@@ -62,39 +106,6 @@
           <view class="empty-icon">💊</view>
           <text class="empty-title">暂无用药记录</text>
           <text class="empty-desc">请联系医生添加用药计划</text>
-        </view>
-      </view>
-
-      <!-- 打卡记录 -->
-      <view class="checkin-logs">
-        <view class="section-header">
-          <text class="section-title">打卡记录</text>
-          <text class="section-subtitle">共{{medicationLogs.length}}条记录</text>
-        </view>
-        
-        <view class="log-list" wx:if="{{medicationLogs.length > 0}}">
-          <view class="log-item" wx:for="{{medicationLogs}}" wx:key="id" bindtap="viewLogDetail" data-log="{{item}}">
-            <view class="log-status" style="background-color: {{item.isTaken === 1 ? '#52c41a' : '#ff4d4f'}}">
-              <text class="status-icon">{{item.isTaken === 1 ? '✓' : '✗'}}</text>
-            </view>
-            <view class="log-info">
-              <text class="log-record">记录ID：{{item.recordId}}</text>
-              <text class="log-time">时间：{{item.takeTime}}</text>
-              <text class="log-status-text" style="color: {{item.isTaken === 1 ? '#52c41a' : '#ff4d4f'}}">
-                {{item.isTaken === 1 ? '已服药' : '未服药'}}
-              </text>
-            </view>
-            <view class="log-arrow">
-              <text class="arrow-icon">›</text>
-            </view>
-          </view>
-        </view>
-
-        <!-- 空状态 -->
-        <view class="empty-state" wx:if="{{medicationLogs.length === 0}}">
-          <view class="empty-icon">📋</view>
-          <text class="empty-title">暂无打卡记录</text>
-          <text class="empty-desc">开始记录您的用药情况</text>
         </view>
       </view>
     </view>

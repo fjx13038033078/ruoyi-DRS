@@ -165,6 +165,9 @@ Page(withAuth({
       if (res.code === 200) {
         const logs = res.rows || res.data || []
         this.setData({ medicationLogs: logs })
+        
+        // 将打卡记录按用药记录分组
+        this.groupLogsByRecord(logs)
       } else {
         this.setData({ medicationLogs: [] })
       }
@@ -173,6 +176,41 @@ Page(withAuth({
       this.setData({ medicationLogs: [] })
       throw error
     }
+  },
+
+  // 将打卡记录按用药记录分组
+  groupLogsByRecord(logs) {
+    const { medicationRecords } = this.data
+    
+    // 为每个用药记录添加对应的打卡记录
+    const recordsWithLogs = medicationRecords.map(record => {
+      const recordLogs = logs.filter(log => log.recordId === record.id)
+      return {
+        ...record,
+        logs: recordLogs,
+        showLogs: false // 默认折叠
+      }
+    })
+    
+    this.setData({ medicationRecords: recordsWithLogs })
+  },
+
+  // 切换打卡记录展开/收起
+  toggleLogs(e) {
+    const recordId = e.currentTarget.dataset.recordId
+    const { medicationRecords } = this.data
+    
+    const updatedRecords = medicationRecords.map(record => {
+      if (record.id === recordId) {
+        return {
+          ...record,
+          showLogs: !record.showLogs
+        }
+      }
+      return record
+    })
+    
+    this.setData({ medicationRecords: updatedRecords })
   },
 
   // 显示添加打卡表单
@@ -290,6 +328,7 @@ Page(withAuth({
         
         // 隐藏表单并重新加载数据
         this.hideAddLogForm()
+        // 重新加载打卡记录并分组
         await this.loadMedicationLogs()
       } else {
         throw new Error(res.msg || '提交失败')
