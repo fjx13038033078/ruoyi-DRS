@@ -1,9 +1,0 @@
-{
-  "usingComponents": {
-    "navigation-bar": "/components/navigation-bar/navigation-bar",
-    "auth-tip": "/components/auth-tip/auth-tip"
-  },
-  "navigationBarTitleText": "不良反应",
-  "enablePullDownRefresh": true,
-  "backgroundTextStyle": "dark"
-}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.documentary.mapper.DocumentaryMapper">
+
+    <resultMap type="Documentary" id="DocumentaryResult">
+        <id property="documentaryId" column="documentary_id"/>
+        <result property="documentaryName" column="documentary_name"/>
+        <result property="detailUrl" column="detail_url"/>
+        <result property="playCount" column="play_count"/>
+        <result property="documentaryType" column="documentary_type"/>
+        <result property="releaseYear" column="release_year"/>
+        <result property="totalEpisodes" column="total_episodes"/>
+        <result property="rating" column="rating"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="director" column="director"/>
+        <result property="description" column="description"/>
+        <result property="broadcastTime" column="broadcast_time"/>
+    </resultMap>
+
+    <!-- 获取所有纪录片 -->
+    <select id="getAllDocumentaries" resultMap="DocumentaryResult">
+        SELECT * FROM drs_documentary
+    </select>
+
+    <!-- 根据纪录片ID获取纪录片信息 -->
+    <select id="getDocumentaryById" parameterType="Long" resultMap="DocumentaryResult">
+        SELECT * FROM drs_documentary WHERE documentary_id = #{documentaryId}
+    </select>
+
+    <!-- 添加纪录片 -->
+    <insert id="addDocumentary" parameterType="Documentary">
+        INSERT INTO drs_documentary (documentary_name, detail_url, play_count, documentary_type, release_year, total_episodes, rating, like_count, director, description, broadcast_time)
+        VALUES (#{documentaryName}, #{detailUrl}, #{playCount}, #{documentaryType}, #{releaseYear}, #{totalEpisodes}, #{rating}, #{likeCount}, #{director}, #{description}, #{broadcastTime})
+    </insert>
+
+    <!-- 更新纪录片信息 -->
+    <update id="updateDocumentary" parameterType="Documentary">
+        UPDATE drs_documentary
+        SET documentary_name = #{documentaryName}, detail_url = #{detailUrl},
+            play_count = #{playCount}, documentary_type = #{documentaryType},
+            release_year = #{releaseYear}, total_episodes = #{totalEpisodes},
+            rating = #{rating}, like_count = #{likeCount},
+            director = #{director}, description = #{description},
+            broadcast_time = #{broadcastTime}
+        WHERE documentary_id = #{documentaryId}
+    </update>
+
+    <!-- 删除纪录片 -->
+    <delete id="deleteDocumentary" parameterType="Long">
+        DELETE FROM drs_documentary WHERE documentary_id = #{documentaryId}
+    </delete>
+
+</mapper>
+
