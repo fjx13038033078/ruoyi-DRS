@@ -13,11 +13,12 @@ import java.util.List;
  */
 public interface DocumentaryService {
     /**
-     * 获取所有纪录片
+     * 获取所有纪录片（支持条件查询）
      *
-     * @return 所有纪录片列表
+     * @param documentary 查询条件
+     * @return 纪录片列表
      */
-    List<Documentary> getAllDocumentaries();
+    List<Documentary> getAllDocumentaries(Documentary documentary);
 
     /**
      * 根据纪录片ID获取纪录片信息

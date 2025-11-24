@@ -2,8 +2,100 @@
   <div class="app-container">
     <!-- 纪录片管理页面 -->
     <div>
+      <!-- 搜索表单 -->
+      <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="80px" style="margin-bottom: 10px;">
+        <el-form-item label="纪录片名" prop="documentaryName">
+          <el-input
+            v-model="queryParams.documentaryName"
+            placeholder="请输入纪录片名称"
+            clearable
+            size="small"
+            style="width: 200px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="类型" prop="documentaryType">
+          <el-input
+            v-model="queryParams.documentaryType"
+            placeholder="请输入类型"
+            clearable
+            size="small"
+            style="width: 150px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="年份" prop="releaseYear">
+          <el-date-picker
+            v-model="queryParams.releaseYear"
+            type="year"
+            placeholder="选择年份"
+            size="small"
+            style="width: 120px"
+            value-format="yyyy"
+          />
+        </el-form-item>
+        <el-form-item label="播放时段" prop="broadcastTime">
+          <el-select v-model="queryParams.broadcastTime" placeholder="选择时段" clearable size="small" style="width: 150px">
+            <el-option label="00:00-06:00" value="00:00-06:00"></el-option>
+            <el-option label="06:00-12:00" value="06:00-12:00"></el-option>
+            <el-option label="12:00-18:00" value="12:00-18:00"></el-option>
+            <el-option label="18:00-24:00" value="18:00-24:00"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+
+      <!-- 高级搜索（可折叠） -->
+      <el-collapse v-model="activeCollapse" style="margin-bottom: 10px;">
+        <el-collapse-item title="高级搜索" name="1">
+          <el-form :model="queryParams" ref="advancedForm" :inline="true" label-width="100px">
+            <el-form-item label="播放量范围">
+              <el-input-number
+                v-model="queryParams.params.minPlayCount"
+                placeholder="最小值"
+                size="small"
+                :min="0"
+                controls-position="right"
+                style="width: 130px"
+              />
+              <span style="margin: 0 5px">-</span>
+              <el-input-number
+                v-model="queryParams.params.maxPlayCount"
+                placeholder="最大值"
+                size="small"
+                :min="0"
+                controls-position="right"
+                style="width: 130px"
+              />
+            </el-form-item>
+            <el-form-item label="点赞数范围">
+              <el-input-number
+                v-model="queryParams.params.minLikeCount"
+                placeholder="最小值"
+                size="small"
+                :min="0"
+                controls-position="right"
+                style="width: 130px"
+              />
+              <span style="margin: 0 5px">-</span>
+              <el-input-number
+                v-model="queryParams.params.maxLikeCount"
+                placeholder="最大值"
+                size="small"
+                :min="0"
+                controls-position="right"
+                style="width: 130px"
+              />
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+      </el-collapse>
+
       <!-- 操作按钮区域 -->
-      <el-row :gutter="20" class="mb-20" style="margin-bottom: 10px; margin-top: 10px">
+      <el-row :gutter="20" class="mb-20" style="margin-bottom: 10px;">
         <el-col>
           <el-button
             type="primary"
@@ -48,7 +140,7 @@
         </el-table-column>
         <el-table-column label="导演/制作人" prop="director" width="150" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column label="播放时段" prop="broadcastTime" width="120" align="center"></el-table-column>
-        <el-table-column label="操作" align="center" width="230" fixed="right">
+        <el-table-column label="操作" align="center" width="300" fixed="right">
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -57,6 +149,14 @@
               @click="handleView(scope.row)"
               v-hasPermi="['documentary:documentary:view']">
               查看
+            </el-button>
+            <el-button
+              type="text"
+              icon="el-icon-star-off"
+              size="mini"
+              @click="handleCollect(scope.row)"
+              style="color: #f56c6c;">
+              收藏
             </el-button>
             <el-button
               type="text"
@@ -201,8 +301,8 @@
 
           <el-form-item label="详情页链接" prop="detailUrl">
             <el-input v-model="documentaryForm.detailUrl" :disabled="isReadOnly" placeholder="请输入详情页链接">
-              <template slot="append" v-if="documentaryForm.detailUrl && !isReadOnly">
-                <el-button icon="el-icon-link" @click="openUrl(documentaryForm.detailUrl)">访问</el-button>
+              <template slot="append" v-if="documentaryForm.detailUrl">
+                <el-button icon="el-icon-link" @click="openUrlAndRecord(documentaryForm.detailUrl, documentaryForm.documentaryId)">访问</el-button>
               </template>
             </el-input>
           </el-form-item>
@@ -237,6 +337,8 @@ import {
   deleteDocumentary,
   getDocumentaryById
 } from '@/api/documentary/documentary'
+import { addStoreup } from '@/api/documentary/storeup'
+import dayjs from 'dayjs'
 
 export default {
   name: 'Documentary',
@@ -249,6 +351,7 @@ export default {
       dialogButtonText: '',
       totalDocumentaries: 0,
       isReadOnly: false, // 是否只读模式
+      activeCollapse: [], // 高级搜索折叠面板
       documentaryForm: {
         documentaryName: '',
         detailUrl: '',
@@ -274,8 +377,24 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        documentaryName: undefined,
+        documentaryType: undefined,
+        releaseYear: undefined,
+        broadcastTime: undefined,
+        params: {
+          minPlayCount: undefined,
+          maxPlayCount: undefined,
+          minLikeCount: undefined,
+          maxLikeCount: undefined
+        }
       }
+    }
+  },
+  computed: {
+    // 获取当前登录用户ID
+    currentUserId() {
+      return this.$store.state.user.id
     }
   },
   created() {
@@ -301,6 +420,40 @@ export default {
       getDocumentaryById(row.documentaryId).then(response => {
         this.documentaryForm = response.data
         this.dialogVisible = true
+        // 记录查看行为
+        this.recordAction(row.documentaryId, 1)
+      })
+    },
+    // 收藏纪录片
+    handleCollect(row) {
+      this.$confirm('确认收藏该纪录片吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(() => {
+        // 记录收藏行为
+        this.recordAction(row.documentaryId, 3, true)
+      }).catch(() => {
+        this.$message.info('已取消收藏')
+      })
+    },
+    // 记录用户行为
+    recordAction(documentaryId, actionType, showMessage = false) {
+      const storeupData = {
+        userId: this.currentUserId,
+        documentaryId: documentaryId,
+        actionType: actionType,
+        actionTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      }
+      addStoreup(storeupData).then(() => {
+        if (showMessage) {
+          this.$message.success('收藏成功！')
+        }
+      }).catch((error) => {
+        if (showMessage) {
+          // 如果是重复收藏，给出友好提示
+          this.$message.warning('您已经收藏过该纪录片了')
+        }
       })
     },
     // 新增纪录片
@@ -402,11 +555,37 @@ export default {
       }
       return num.toString()
     },
-    // 打开链接
-    openUrl(url) {
+    // 打开链接并记录访问行为
+    openUrlAndRecord(url, documentaryId) {
       if (url) {
+        // 记录访问行为
+        this.recordAction(documentaryId, 2)
+        // 打开链接
         window.open(url, '_blank')
       }
+    },
+    // 搜索按钮操作
+    handleQuery() {
+      this.queryParams.pageNum = 1
+      this.fetchDocumentaries()
+    },
+    // 重置按钮操作
+    resetQuery() {
+      this.queryParams = {
+        pageNum: 1,
+        pageSize: 10,
+        documentaryName: undefined,
+        documentaryType: undefined,
+        releaseYear: undefined,
+        broadcastTime: undefined,
+        params: {
+          minPlayCount: undefined,
+          maxPlayCount: undefined,
+          minLikeCount: undefined,
+          maxLikeCount: undefined
+        }
+      }
+      this.handleQuery()
     }
   }
 }

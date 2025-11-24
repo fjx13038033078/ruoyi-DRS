@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.documentary.mapper.StoreupMapper">
+
+    <resultMap type="Storeup" id="StoreupResult">
+        <id property="storeupId" column="storeup_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="documentaryId" column="documentary_id"/>
+        <result property="documentaryName" column="documentary_name"/>
+        <result property="actionType" column="action_type"/>
+        <result property="actionTime" column="action_time"/>
+    </resultMap>
+
+    <!-- 获取所有行为记录（关联纪录片名称） -->
+    <select id="getAllStoreupsWithDocumentaryName" resultMap="StoreupResult">
+        SELECT s.*, d.documentary_name
+        FROM drs_storeup s
+        LEFT JOIN drs_documentary d ON s.documentary_id = d.documentary_id
+        ORDER BY s.action_time DESC
+    </select>
+
+    <!-- 根据行为记录ID获取行为记录信息 -->
+    <select id="getStoreupById" parameterType="Long" resultMap="StoreupResult">
+        SELECT s.*, d.documentary_name
+        FROM drs_storeup s
+        LEFT JOIN drs_documentary d ON s.documentary_id = d.documentary_id
+        WHERE s.storeup_id = #{storeupId}
+    </select>
+
+    <!-- 根据用户ID和操作类型获取行为记录列表 -->
+    <select id="getStoreupsByUserIdAndActionType" resultMap="StoreupResult">
+        SELECT s.*, d.documentary_name
+        FROM drs_storeup s
+        LEFT JOIN drs_documentary d ON s.documentary_id = d.documentary_id
+        WHERE s.user_id = #{userId}
+        <if test="actionType != null">
+            AND s.action_type = #{actionType}
+        </if>
+        ORDER BY s.action_time DESC
+    </select>
+
+    <!-- 根据用户ID获取收藏列表 -->
+    <select id="getCollectionsByUserId" parameterType="Long" resultMap="StoreupResult">
+        SELECT s.*, d.documentary_name
+        FROM drs_storeup s
+        LEFT JOIN drs_documentary d ON s.documentary_id = d.documentary_id
+        WHERE s.user_id = #{userId} AND s.action_type = 3
+        ORDER BY s.action_time DESC
+    </select>
+
+    <!-- 添加行为记录 -->
+    <insert id="addStoreup" parameterType="Storeup">
+        INSERT INTO drs_storeup (user_id, documentary_id, action_type, action_time)
+        VALUES (#{userId}, #{documentaryId}, #{actionType}, #{actionTime})
+    </insert>
+
+    <!-- 更新行为记录信息 -->
+    <update id="updateStoreup" parameterType="Storeup">
+        UPDATE drs_storeup
+        SET user_id = #{userId}, documentary_id = #{documentaryId},
+            action_type = #{actionType}, action_time = #{actionTime}
+        WHERE storeup_id = #{storeupId}
+    </update>
+
+    <!-- 删除行为记录 -->
+    <delete id="deleteStoreup" parameterType="Long">
+        DELETE FROM drs_storeup WHERE storeup_id = #{storeupId}
+    </delete>
+
+    <!-- 检查用户是否已收藏该纪录片 -->
+    <select id="checkStoreupExists" resultType="Long">
+        SELECT storeup_id
+        FROM drs_storeup
+        WHERE user_id = #{userId}
+        AND documentary_id = #{documentaryId}
+        AND action_type = #{actionType}
+        LIMIT 1
+    </select>
+
+    <!-- 根据用户ID和纪录片ID删除收藏 -->
+    <delete id="deleteStoreupByUserAndDocumentary">
+        DELETE FROM drs_storeup
+        WHERE user_id = #{userId}
+        AND documentary_id = #{documentaryId}
+        AND action_type = 3
+    </delete>
+
+</mapper>
+

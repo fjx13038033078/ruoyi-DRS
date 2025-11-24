@@ -20,8 +20,35 @@
     </resultMap>
 
     <!-- 获取所有纪录片 -->
-    <select id="getAllDocumentaries" resultMap="DocumentaryResult">
+    <select id="getAllDocumentaries" parameterType="Documentary" resultMap="DocumentaryResult">
         SELECT * FROM drs_documentary
+        <where>
+            <if test="documentaryName != null and documentaryName != ''">
+                AND documentary_name like concat('%', #{documentaryName}, '%')
+            </if>
+            <if test="documentaryType != null and documentaryType != ''">
+                AND documentary_type = #{documentaryType}
+            </if>
+            <if test="releaseYear != null">
+                AND release_year = #{releaseYear}
+            </if>
+            <if test="broadcastTime != null and broadcastTime != ''">
+                AND broadcast_time = #{broadcastTime}
+            </if>
+            <if test="params.minPlayCount != null">
+                AND play_count &gt;= #{params.minPlayCount}
+            </if>
+            <if test="params.maxPlayCount != null">
+                AND play_count &lt;= #{params.maxPlayCount}
+            </if>
+            <if test="params.minLikeCount != null">
+                AND like_count &gt;= #{params.minLikeCount}
+            </if>
+            <if test="params.maxLikeCount != null">
+                AND like_count &lt;= #{params.maxLikeCount}
+            </if>
+        </where>
+        ORDER BY documentary_id DESC
     </select>
 
     <!-- 根据纪录片ID获取纪录片信息 -->

@@ -24,8 +24,8 @@ public class DocumentaryServiceImpl implements DocumentaryService {
     private final DocumentaryMapper documentaryMapper;
 
     @Override
-    public List<Documentary> getAllDocumentaries() {
-        return documentaryMapper.getAllDocumentaries();
+    public List<Documentary> getAllDocumentaries(Documentary documentary) {
+        return documentaryMapper.getAllDocumentaries(documentary);
     }
 
     @Override

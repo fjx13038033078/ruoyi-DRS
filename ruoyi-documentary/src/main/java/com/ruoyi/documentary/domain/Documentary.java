@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 纪录片实体类
@@ -82,6 +85,12 @@ public class Documentary implements Serializable {
      * 主要播放时段
      */
     private String broadcastTime;
+
+    /**
+     * 请求参数（用于额外的查询条件）
+     */
+    @TableField(exist = false)
+    private Map<String, Object> params = new HashMap<>();
 
     /**
      * 序列化版本UID

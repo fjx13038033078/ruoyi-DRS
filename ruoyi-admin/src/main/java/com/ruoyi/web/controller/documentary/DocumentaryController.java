@@ -24,14 +24,15 @@ public class DocumentaryController extends BaseController {
     private final DocumentaryService documentaryService;
 
     /**
-     * 获取所有纪录片列表
+     * 获取所有纪录片列表（支持条件查询）
      *
+     * @param documentary 查询条件
      * @return 纪录片列表（分页）
      */
     @GetMapping("/listAll")
-    public TableDataInfo listAllDocumentaries() {
+    public TableDataInfo listAllDocumentaries(Documentary documentary) {
         startPage();
-        List<Documentary> allDocumentaries = documentaryService.getAllDocumentaries();
+        List<Documentary> allDocumentaries = documentaryService.getAllDocumentaries(documentary);
         return getDataTable(allDocumentaries);
     }
 
