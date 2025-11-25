@@ -140,7 +140,28 @@
         </el-table-column>
         <el-table-column label="导演/制作人" prop="director" width="150" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column label="播放时段" prop="broadcastTime" width="120" align="center"></el-table-column>
-        <el-table-column label="操作" align="center" width="300" fixed="right">
+        <el-table-column label="用户评分" prop="averageRating" width="100" align="center">
+          <template slot-scope="scope">
+            <el-rate
+              v-model="scope.row.averageRating"
+              disabled
+              show-score
+              text-color="#ff9900"
+              :max="5"
+              :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
+              style="display: inline-block;">
+            </el-rate>
+            <div style="font-size: 12px; color: #909399;">
+              {{ scope.row.averageRating ? (scope.row.averageRating / 2).toFixed(1) : '暂无' }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="评论数" prop="commentCount" width="80" align="center">
+          <template slot-scope="scope">
+            <el-tag type="info" size="small">{{ scope.row.commentCount || 0 }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="400" fixed="right">
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -157,6 +178,22 @@
               @click="handleCollect(scope.row)"
               style="color: #f56c6c;">
               收藏
+            </el-button>
+            <el-button
+              type="text"
+              icon="el-icon-chat-line-round"
+              size="mini"
+              @click="handleComment(scope.row)"
+              style="color: #409eff;">
+              评论
+            </el-button>
+            <el-button
+              type="text"
+              icon="el-icon-tickets"
+              size="mini"
+              @click="handleViewComments(scope.row)"
+              style="color: #67c23a;">
+              查看评论
             </el-button>
             <el-button
               type="text"
@@ -326,6 +363,96 @@
         <el-button type="primary" @click="handleSubmit" v-if="!isReadOnly">{{ dialogButtonText }}</el-button>
       </div>
     </el-dialog>
+
+    <!-- 评论对话框 -->
+    <el-dialog
+      :visible.sync="commentDialogVisible"
+      title="发表评论"
+      width="40%"
+      @close="handleCloseCommentDialog">
+      <el-form :model="commentForm" :rules="commentRules" ref="commentForm" label-width="80px">
+        <el-form-item label="评分" prop="rating">
+          <el-rate
+            v-model="commentForm.rating"
+            :max="5"
+            show-score
+            :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
+            score-template="{value} 分">
+          </el-rate>
+          <div style="color: #909399; font-size: 12px; margin-top: 5px;">
+            对应10分制：{{ commentForm.rating ? (commentForm.rating * 2).toFixed(1) : '0.0' }} 分
+          </div>
+        </el-form-item>
+        <el-form-item label="评论内容" prop="content">
+          <el-input
+            v-model="commentForm.content"
+            type="textarea"
+            :rows="5"
+            placeholder="请输入您的评论（选填）"
+            maxlength="500"
+            show-word-limit>
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="commentDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitComment">提 交</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 查看评论对话框 -->
+    <el-dialog
+      :visible.sync="commentsDialogVisible"
+      :title="commentsDialogTitle"
+      width="60%"
+      @close="handleCloseCommentsDialog">
+      <div v-loading="commentsLoading">
+        <el-empty v-if="commentsList.length === 0" description="暂无评论"></el-empty>
+        <div v-else>
+          <el-card v-for="comment in commentsList" :key="comment.commentId" shadow="hover" style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div style="flex: 1;">
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                  <el-avatar :size="40" style="margin-right: 10px;">
+                    {{ comment.nickName ? comment.nickName.charAt(0) : 'U' }}
+                  </el-avatar>
+                  <div>
+                    <div style="font-weight: bold; color: #303133;">{{ comment.nickName || comment.userName || '匿名用户' }}</div>
+                    <div style="font-size: 12px; color: #909399;">{{ formatDateTime(comment.createTime) }}</div>
+                  </div>
+                </div>
+                <div v-if="comment.rating" style="margin-bottom: 10px;">
+                  <el-rate
+                    :value="comment.rating / 2"
+                    disabled
+                    :max="5"
+                    :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
+                  </el-rate>
+                  <span style="color: #606266; margin-left: 10px; font-weight: bold;">{{ comment.rating.toFixed(1) }} 分</span>
+                </div>
+                <div v-if="comment.content" style="color: #606266; line-height: 1.6; white-space: pre-wrap;">
+                  {{ comment.content }}
+                </div>
+              </div>
+              <div style="text-align: center; min-width: 60px;">
+                <el-button
+                  type="text"
+                  icon="el-icon-thumb"
+                  @click="handleLikeComment(comment)"
+                  style="font-size: 18px; color: #909399;">
+                </el-button>
+                <div style="font-size: 12px; color: #909399; margin-top: 5px;">
+                  {{ comment.likeCount || 0 }}
+                </div>
+              </div>
+            </div>
+          </el-card>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="commentsDialogVisible = false">关 闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -338,6 +465,13 @@ import {
   getDocumentaryById
 } from '@/api/documentary/documentary'
 import { addStoreup } from '@/api/documentary/storeup'
+import {
+  addComment,
+  listCommentsByDocumentary,
+  likeComment,
+  getAverageRating,
+  getCommentCount
+} from '@/api/documentary/comment'
 import dayjs from 'dayjs'
 
 export default {
@@ -389,7 +523,25 @@ export default {
           minLikeCount: undefined,
           maxLikeCount: undefined
         }
-      }
+      },
+      // 评论对话框
+      commentDialogVisible: false,
+      commentForm: {
+        documentaryId: null,
+        rating: 0,
+        content: ''
+      },
+      commentRules: {
+        rating: [
+          { required: true, message: '请给出您的评分', trigger: 'change' }
+        ]
+      },
+      // 查看评论对话框
+      commentsDialogVisible: false,
+      commentsDialogTitle: '',
+      commentsList: [],
+      commentsLoading: false,
+      currentDocumentaryForComments: null
     }
   },
   computed: {
@@ -408,9 +560,24 @@ export default {
       listAllDocumentaries(this.queryParams).then(response => {
         this.documentaryList = response.rows
         this.totalDocumentaries = response.total
+        // 加载每个纪录片的平均评分和评论数
+        this.loadDocumentaryRatingsAndCounts()
         this.loading = false
       }).catch(() => {
         this.loading = false
+      })
+    },
+    // 加载纪录片的评分和评论数
+    loadDocumentaryRatingsAndCounts() {
+      this.documentaryList.forEach(doc => {
+        // 获取平均评分
+        getAverageRating(doc.documentaryId).then(response => {
+          this.$set(doc, 'averageRating', response.data || 0)
+        })
+        // 获取评论数量
+        getCommentCount(doc.documentaryId).then(response => {
+          this.$set(doc, 'commentCount', response.data || 0)
+        })
       })
     },
     // 查看纪录片详情
@@ -595,6 +762,85 @@ export default {
         }
       }
       this.handleQuery()
+    },
+    // 打开评论对话框
+    handleComment(row) {
+      this.commentForm = {
+        documentaryId: row.documentaryId,
+        userId: this.currentUserId,
+        rating: 0,
+        content: ''
+      }
+      this.commentDialogVisible = true
+    },
+    // 提交评论
+    submitComment() {
+      this.$refs.commentForm.validate(valid => {
+        if (valid) {
+          // 将5分制评分转换为10分制
+          const commentData = {
+            ...this.commentForm,
+            rating: this.commentForm.rating * 2,
+            createBy: this.$store.state.user.name
+          }
+          
+          addComment(commentData).then(response => {
+            if (response.code === 200) {
+              this.$message.success('评论成功！')
+              this.commentDialogVisible = false
+              this.fetchDocumentaries() // 刷新列表以更新评分
+            } else {
+              this.$message.warning(response.msg || '评论失败')
+            }
+          }).catch(() => {
+            this.$message.error('评论失败！')
+          })
+        }
+      })
+    },
+    // 关闭评论对话框
+    handleCloseCommentDialog() {
+      this.commentDialogVisible = false
+      if (this.$refs.commentForm) {
+        this.$refs.commentForm.resetFields()
+      }
+    },
+    // 查看评论
+    handleViewComments(row) {
+      this.currentDocumentaryForComments = row
+      this.commentsDialogTitle = `${row.documentaryName} - 评论列表`
+      this.commentsDialogVisible = true
+      this.loadComments(row.documentaryId)
+    },
+    // 加载评论列表
+    loadComments(documentaryId) {
+      this.commentsLoading = true
+      listCommentsByDocumentary(documentaryId).then(response => {
+        this.commentsList = response.data || []
+        this.commentsLoading = false
+      }).catch(() => {
+        this.commentsLoading = false
+      })
+    },
+    // 点赞评论
+    handleLikeComment(comment) {
+      likeComment(comment.commentId).then(() => {
+        this.$message.success('点赞成功！')
+        comment.likeCount = (comment.likeCount || 0) + 1
+      }).catch(() => {
+        this.$message.error('点赞失败！')
+      })
+    },
+    // 关闭评论列表对话框
+    handleCloseCommentsDialog() {
+      this.commentsDialogVisible = false
+      this.commentsList = []
+      this.currentDocumentaryForComments = null
+    },
+    // 格式化日期时间
+    formatDateTime(datetime) {
+      if (!datetime) return ''
+      return dayjs(datetime).format('YYYY-MM-DD HH:mm:ss')
     }
   }
 }

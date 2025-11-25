@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.documentary.mapper.CommentMapper">
+
+    <resultMap type="Comment" id="CommentResult">
+        <id property="commentId" column="comment_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="documentaryId" column="documentary_id"/>
+        <result property="rating" column="rating"/>
+        <result property="content" column="content"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="documentaryName" column="documentary_name"/>
+    </resultMap>
+
+    <!-- 获取所有评论（关联用户和纪录片信息） -->
+    <select id="getAllComments" parameterType="Comment" resultMap="CommentResult">
+        SELECT c.*, u.user_name, u.nick_name, d.documentary_name
+        FROM drs_comment c
+        LEFT JOIN sys_user u ON c.user_id = u.user_id
+        LEFT JOIN drs_documentary d ON c.documentary_id = d.documentary_id
+        <where>
+            <if test="documentaryId != null">
+                AND c.documentary_id = #{documentaryId}
+            </if>
+            <if test="userId != null">
+                AND c.user_id = #{userId}
+            </if>
+            <if test="status != null">
+                AND c.status = #{status}
+            </if>
+            <if test="rating != null">
+                AND c.rating = #{rating}
+            </if>
+            <if test="params.minRating != null">
+                AND c.rating &gt;= #{params.minRating}
+            </if>
+            <if test="params.maxRating != null">
+                AND c.rating &lt;= #{params.maxRating}
+            </if>
+            <if test="content != null and content != ''">
+                AND c.content like concat('%', #{content}, '%')
+            </if>
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 根据纪录片ID获取评论列表（只获取正常状态的评论） -->
+    <select id="getCommentsByDocumentaryId" parameterType="Long" resultMap="CommentResult">
+        SELECT c.*, u.user_name, u.nick_name
+        FROM drs_comment c
+        LEFT JOIN sys_user u ON c.user_id = u.user_id
+        WHERE c.documentary_id = #{documentaryId} AND c.status = 1
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 根据用户ID获取评论列表 -->
+    <select id="getCommentsByUserId" parameterType="Long" resultMap="CommentResult">
+        SELECT c.*, d.documentary_name
+        FROM drs_comment c
+        LEFT JOIN drs_documentary d ON c.documentary_id = d.documentary_id
+        WHERE c.user_id = #{userId} AND c.status = 1
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 根据评论ID获取评论信息 -->
+    <select id="getCommentById" parameterType="Long" resultMap="CommentResult">
+        SELECT c.*, u.user_name, u.nick_name, d.documentary_name
+        FROM drs_comment c
+        LEFT JOIN sys_user u ON c.user_id = u.user_id
+        LEFT JOIN drs_documentary d ON c.documentary_id = d.documentary_id
+        WHERE c.comment_id = #{commentId}
+    </select>
+
+    <!-- 添加评论 -->
+    <insert id="addComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO drs_comment (
+            user_id, documentary_id, rating, content, like_count, status, 
+            create_time, create_by, remark
+        )
+        VALUES (
+            #{userId}, #{documentaryId}, #{rating}, #{content}, 
+            COALESCE(#{likeCount}, 0), COALESCE(#{status}, 1), 
+            NOW(), #{createBy}, #{remark}
+        )
+    </insert>
+
+    <!-- 更新评论信息 -->
+    <update id="updateComment" parameterType="Comment">
+        UPDATE drs_comment
+        <set>
+            <if test="rating != null">rating = #{rating},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = NOW()
+        </set>
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 逻辑删除评论 -->
+    <update id="deleteComment" parameterType="Long">
+        UPDATE drs_comment
+        SET status = 2, update_time = NOW()
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 物理删除评论 -->
+    <delete id="removeComment" parameterType="Long">
+        DELETE FROM drs_comment WHERE comment_id = #{commentId}
+    </delete>
+
+    <!-- 点赞评论 -->
+    <update id="likeComment" parameterType="Long">
+        UPDATE drs_comment
+        SET like_count = like_count + 1, update_time = NOW()
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 检查用户是否已经评论过该纪录片 -->
+    <select id="checkUserCommentExists" resultType="Long">
+        SELECT comment_id
+        FROM drs_comment
+        WHERE user_id = #{userId}
+        AND documentary_id = #{documentaryId}
+        AND status = 1
+        LIMIT 1
+    </select>
+
+    <!-- 获取纪录片的平均评分 -->
+    <select id="getAverageRating" parameterType="Long" resultType="Double">
+        SELECT AVG(rating)
+        FROM drs_comment
+        WHERE documentary_id = #{documentaryId}
+        AND rating IS NOT NULL
+        AND status = 1
+    </select>
+
+    <!-- 获取纪录片的评论数量 -->
+    <select id="getCommentCount" parameterType="Long" resultType="Integer">
+        SELECT COUNT(*)
+        FROM drs_comment
+        WHERE documentary_id = #{documentaryId}
+        AND status = 1
+    </select>
+
+</mapper>
+
