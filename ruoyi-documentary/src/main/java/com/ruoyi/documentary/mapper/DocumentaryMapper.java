@@ -2,6 +2,7 @@ package com.ruoyi.documentary.mapper;
 
 import com.ruoyi.documentary.domain.Documentary;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -53,5 +54,14 @@ public interface DocumentaryMapper {
      * @return 删除成功返回影响的行数，否则返回0
      */
     int deleteDocumentary(Long documentaryId);
+
+    /**
+     * 更新纪录片审核状态
+     *
+     * @param documentaryId 纪录片ID
+     * @param status 审核状态（1-未审核，2-审核通过，3-审核不通过）
+     * @return 更新成功返回影响的行数，否则返回0
+     */
+    int updateDocumentaryStatus(@Param("documentaryId") Long documentaryId, @Param("status") Integer status);
 }
 

@@ -45,19 +45,23 @@ public class StoreupServiceImpl implements StoreupService {
 
     @Override
     public boolean addStoreup(Storeup storeup) {
-        // 检查是否已存在相同的记录
-        Long existingId = storeupMapper.checkStoreupExists(
-            storeup.getUserId(), 
-            storeup.getDocumentaryId(), 
-            storeup.getActionType()
-        );
-        
-        if (existingId != null) {
-            log.warn("用户{}对纪录片{}的操作类型{}已存在，不重复添加", 
-                storeup.getUserId(), storeup.getDocumentaryId(), storeup.getActionType());
-            return false;
+        // 只对收藏操作（actionType=3）进行重复检查
+        // 查看（actionType=1）和访问（actionType=2）可以重复记录
+        if (storeup.getActionType() != null && storeup.getActionType() == 3) {
+            Long existingId = storeupMapper.checkStoreupExists(
+                storeup.getUserId(), 
+                storeup.getDocumentaryId(), 
+                storeup.getActionType()
+            );
+            
+            if (existingId != null) {
+                log.warn("用户{}已经收藏过纪录片{}，不重复添加", 
+                    storeup.getUserId(), storeup.getDocumentaryId());
+                return false;
+            }
         }
         
+        // 直接插入记录（查看和访问可以重复）
         int rows = storeupMapper.addStoreup(storeup);
         return rows > 0;
     }

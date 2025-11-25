@@ -87,6 +87,11 @@ public class Documentary implements Serializable {
     private String broadcastTime;
 
     /**
+     * 审核状态（1-未审核，2-审核通过，3-审核不通过）
+     */
+    private Integer status;
+
+    /**
      * 请求参数（用于额外的查询条件）
      */
     @TableField(exist = false)

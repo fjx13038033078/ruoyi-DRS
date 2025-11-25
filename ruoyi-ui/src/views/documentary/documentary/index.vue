@@ -382,6 +382,7 @@ export default {
         documentaryType: undefined,
         releaseYear: undefined,
         broadcastTime: undefined,
+        status: 2, // 只显示审核通过的纪录片
         params: {
           minPlayCount: undefined,
           maxPlayCount: undefined,
@@ -445,13 +446,20 @@ export default {
         actionType: actionType,
         actionTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
       }
-      addStoreup(storeupData).then(() => {
+      addStoreup(storeupData).then(response => {
         if (showMessage) {
-          this.$message.success('收藏成功！')
+          // actionType: 1-查看, 2-访问, 3-收藏
+          if (actionType === 3) {
+            if (response.code === 200) {
+              this.$message.success('收藏成功！')
+            } else {
+              this.$message.warning('您已经收藏过该纪录片了')
+            }
+          }
         }
       }).catch((error) => {
-        if (showMessage) {
-          // 如果是重复收藏，给出友好提示
+        if (showMessage && actionType === 3) {
+          // 只对收藏操作显示错误信息
           this.$message.warning('您已经收藏过该纪录片了')
         }
       })
@@ -578,6 +586,7 @@ export default {
         documentaryType: undefined,
         releaseYear: undefined,
         broadcastTime: undefined,
+        status: 2, // 保持只显示审核通过的
         params: {
           minPlayCount: undefined,
           maxPlayCount: undefined,

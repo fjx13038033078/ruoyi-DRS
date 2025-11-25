@@ -50,5 +50,17 @@ public class DocumentaryServiceImpl implements DocumentaryService {
         int rows = documentaryMapper.deleteDocumentary(documentaryId);
         return rows > 0;
     }
+
+    @Override
+    public boolean approveDocumentary(Long documentaryId) {
+        int rows = documentaryMapper.updateDocumentaryStatus(documentaryId, 2);
+        return rows > 0;
+    }
+
+    @Override
+    public boolean rejectDocumentary(Long documentaryId) {
+        int rows = documentaryMapper.updateDocumentaryStatus(documentaryId, 3);
+        return rows > 0;
+    }
 }
 

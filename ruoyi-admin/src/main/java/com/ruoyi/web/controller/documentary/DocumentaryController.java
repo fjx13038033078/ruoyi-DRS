@@ -79,5 +79,27 @@ public class DocumentaryController extends BaseController {
     public AjaxResult deleteDocumentary(@RequestParam Long documentaryId) {
         return toAjax(documentaryService.deleteDocumentary(documentaryId));
     }
+
+    /**
+     * 审核通过纪录片
+     *
+     * @param documentaryId 纪录片ID
+     * @return 操作结果
+     */
+    @GetMapping("/approve")
+    public AjaxResult approveDocumentary(@RequestParam Long documentaryId) {
+        return toAjax(documentaryService.approveDocumentary(documentaryId));
+    }
+
+    /**
+     * 审核不通过纪录片
+     *
+     * @param documentaryId 纪录片ID
+     * @return 操作结果
+     */
+    @GetMapping("/reject")
+    public AjaxResult rejectDocumentary(@RequestParam Long documentaryId) {
+        return toAjax(documentaryService.rejectDocumentary(documentaryId));
+    }
 }
 

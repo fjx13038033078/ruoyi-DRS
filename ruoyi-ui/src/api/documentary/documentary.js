@@ -45,3 +45,21 @@ export function deleteDocumentary(documentaryId) {
   })
 }
 
+// 审核通过纪录片
+export function approveDocumentary(documentaryId) {
+  return request({
+    url: '/documentary/documentary/approve',
+    method: 'get',
+    params: { documentaryId }
+  })
+}
+
+// 审核不通过纪录片
+export function rejectDocumentary(documentaryId) {
+  return request({
+    url: '/documentary/documentary/reject',
+    method: 'get',
+    params: { documentaryId }
+  })
+}
+

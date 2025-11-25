@@ -51,5 +51,21 @@ public interface DocumentaryService {
      * @return 删除成功返回 true，否则返回 false
      */
     boolean deleteDocumentary(Long documentaryId);
+
+    /**
+     * 审核通过纪录片
+     *
+     * @param documentaryId 纪录片ID
+     * @return 审核成功返回 true，否则返回 false
+     */
+    boolean approveDocumentary(Long documentaryId);
+
+    /**
+     * 审核不通过纪录片
+     *
+     * @param documentaryId 纪录片ID
+     * @return 审核成功返回 true，否则返回 false
+     */
+    boolean rejectDocumentary(Long documentaryId);
 }
 

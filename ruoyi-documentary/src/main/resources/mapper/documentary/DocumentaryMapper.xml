@@ -17,6 +17,7 @@
         <result property="director" column="director"/>
         <result property="description" column="description"/>
         <result property="broadcastTime" column="broadcast_time"/>
+        <result property="status" column="status"/>
     </resultMap>
 
     <!-- 获取所有纪录片 -->
@@ -34,6 +35,12 @@
             </if>
             <if test="broadcastTime != null and broadcastTime != ''">
                 AND broadcast_time = #{broadcastTime}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="params.showPendingAndRejected != null and params.showPendingAndRejected == 'yes'">
+                AND status IN (1, 3)
             </if>
             <if test="params.minPlayCount != null">
                 AND play_count &gt;= #{params.minPlayCount}
@@ -58,8 +65,8 @@
 
     <!-- 添加纪录片 -->
     <insert id="addDocumentary" parameterType="Documentary">
-        INSERT INTO drs_documentary (documentary_name, detail_url, play_count, documentary_type, release_year, total_episodes, rating, like_count, director, description, broadcast_time)
-        VALUES (#{documentaryName}, #{detailUrl}, #{playCount}, #{documentaryType}, #{releaseYear}, #{totalEpisodes}, #{rating}, #{likeCount}, #{director}, #{description}, #{broadcastTime})
+        INSERT INTO drs_documentary (documentary_name, detail_url, play_count, documentary_type, release_year, total_episodes, rating, like_count, director, description, broadcast_time, status)
+        VALUES (#{documentaryName}, #{detailUrl}, #{playCount}, #{documentaryType}, #{releaseYear}, #{totalEpisodes}, #{rating}, #{likeCount}, #{director}, #{description}, #{broadcastTime}, COALESCE(#{status}, 1))
     </insert>
 
     <!-- 更新纪录片信息 -->
@@ -71,6 +78,7 @@
             rating = #{rating}, like_count = #{likeCount},
             director = #{director}, description = #{description},
             broadcast_time = #{broadcastTime}
+            <if test="status != null">, status = #{status}</if>
         WHERE documentary_id = #{documentaryId}
     </update>
 
@@ -78,6 +86,13 @@
     <delete id="deleteDocumentary" parameterType="Long">
         DELETE FROM drs_documentary WHERE documentary_id = #{documentaryId}
     </delete>
+
+    <!-- 更新纪录片审核状态 -->
+    <update id="updateDocumentaryStatus">
+        UPDATE drs_documentary
+        SET status = #{status}
+        WHERE documentary_id = #{documentaryId}
+    </update>
 
 </mapper>
 
