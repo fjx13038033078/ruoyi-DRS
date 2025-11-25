@@ -1,7 +1,14 @@
 <template>
   <div>
-    <div ref="echartsText" style="margin-top: 10px; height: 100px; display: flex; justify-content: center; align-items: center;">
-      <!-- 这里 ECharts 动画文本会被渲染 -->
+    <!-- 页面标题区域 -->
+    <div class="page-header">
+      <div class="header-content">
+        <div class="title-wrapper">
+          <i class="el-icon-film header-icon"></i>
+          <h1 class="main-title">纪录片个性化推荐系统</h1>
+        </div>
+        <p class="subtitle">Documentary Recommendation System</p>
+      </div>
     </div>
     <div>
       <!-- 通知公告 -->
@@ -139,9 +146,6 @@ export default {
   created() {
     this.getList();
   },
-  mounted() {
-    this.initEchartsText();
-  },
   methods: {
     parseTime,
     /** 查询公告列表 */
@@ -162,60 +166,6 @@ export default {
         this.loading = false;
       });
     },
-
-    // 初始化 ECharts 动画文本
-    initEchartsText() {
-      const chartDom = this.$refs.echartsText;
-      const myChart = echarts.init(chartDom);
-      const option = {
-        graphic: {
-          elements: [
-            {
-              type: 'text',
-              left: 'center',
-              top: 'center',
-              style: {
-                text: 'GVP信息收集系统',
-                fontSize: 80,
-                fontWeight: 'bold',
-                lineDash: [0, 200],
-                lineDashOffset: 0,
-                fill: 'transparent',
-                stroke: '#000',
-                lineWidth: 1
-              },
-              keyframeAnimation: {
-                duration: 3000,
-                loop: true,
-                keyframes: [
-                  {
-                    percent: 0.7,
-                    style: {
-                      fill: 'transparent',
-                      lineDashOffset: 200,
-                      lineDash: [200, 0]
-                    }
-                  },
-                  {
-                    percent: 0.8,
-                    style: {
-                      fill: 'transparent'
-                    }
-                  },
-                  {
-                    percent: 1,
-                    style: {
-                      fill: 'black'
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      };
-      myChart.setOption(option);
-    },
   }
 };
 </script>
@@ -226,5 +176,126 @@ export default {
   height: auto;
   display: block;
   margin: 0 auto;
+}
+
+/* 页面标题样式 */
+.page-header {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.header-icon {
+  font-size: 48px;
+  color: #ffffff;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.main-title {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: 2px;
+  animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 3px;
+  font-weight: 300;
+  animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+  .page-header {
+    padding: 20px 15px;
+  }
+
+  .header-icon {
+    font-size: 36px;
+  }
+
+  .main-title {
+    font-size: 28px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
 }
 </style>
