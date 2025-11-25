@@ -43,7 +43,7 @@
         </el-col>
         <el-col :span="12">
           <el-card style="margin-right: 20px; height: 420px;">
-            <h3 slot="header">健康小贴士</h3>
+            <h3 slot="header">经典纪录片</h3>
             <el-carousel :interval="5000" arrow="always">
               <el-carousel-item>
                 <a href="https://www.baidu.com" target="_blank">
