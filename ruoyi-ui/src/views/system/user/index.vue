@@ -2,33 +2,33 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!--部门数据-->
-      <el-col :span="4" :xs="24">
-        <div class="head-container">
-          <el-input
-            v-model="deptName"
-            placeholder="请输入部门名称"
-            clearable
-            size="small"
-            prefix-icon="el-icon-search"
-            style="margin-bottom: 20px"
-          />
-        </div>
-        <div class="head-container">
-          <el-tree
-            :data="deptOptions"
-            :props="defaultProps"
-            :expand-on-click-node="false"
-            :filter-node-method="filterNode"
-            ref="tree"
-            node-key="id"
-            default-expand-all
-            highlight-current
-            @node-click="handleNodeClick"
-          />
-        </div>
-      </el-col>
+<!--      <el-col :span="4" :xs="24">-->
+<!--        <div class="head-container">-->
+<!--          <el-input-->
+<!--            v-model="deptName"-->
+<!--            placeholder="请输入部门名称"-->
+<!--            clearable-->
+<!--            size="small"-->
+<!--            prefix-icon="el-icon-search"-->
+<!--            style="margin-bottom: 20px"-->
+<!--          />-->
+<!--        </div>-->
+<!--        <div class="head-container">-->
+<!--          <el-tree-->
+<!--            :data="deptOptions"-->
+<!--            :props="defaultProps"-->
+<!--            :expand-on-click-node="false"-->
+<!--            :filter-node-method="filterNode"-->
+<!--            ref="tree"-->
+<!--            node-key="id"-->
+<!--            default-expand-all-->
+<!--            highlight-current-->
+<!--            @node-click="handleNodeClick"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </el-col>-->
       <!--用户数据-->
-      <el-col :span="20" :xs="24">
+      <el-col :span="24" :xs="24">
         <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
           <el-form-item label="用户名称" prop="userName">
             <el-input
@@ -212,11 +212,11 @@
               <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="科室" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择科室" />
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="科室" prop="deptId">-->
+<!--              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择科室" />-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
         </el-row>
         <el-row>
           <el-col :span="12">

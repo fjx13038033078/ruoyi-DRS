@@ -67,7 +67,6 @@ public class CommentController extends BaseController {
      * @param commentId 评论ID
      * @return 评论信息
      */
-    @PreAuthorize("@ss.hasPermi('documentary:comment:query')")
     @GetMapping("/detail")
     public AjaxResult getCommentById(@RequestParam Long commentId) {
         Comment comment = commentService.getCommentById(commentId);
@@ -80,7 +79,6 @@ public class CommentController extends BaseController {
      * @param comment 评论信息
      * @return 操作结果
      */
-    @PreAuthorize("@ss.hasPermi('documentary:comment:add')")
     @PostMapping("/add")
     public AjaxResult addComment(@RequestBody Comment comment) {
         boolean success = commentService.addComment(comment);
@@ -97,7 +95,6 @@ public class CommentController extends BaseController {
      * @param comment 评论信息
      * @return 操作结果
      */
-    @PreAuthorize("@ss.hasPermi('documentary:comment:edit')")
     @PostMapping("/update")
     public AjaxResult updateComment(@RequestBody Comment comment) {
         return toAjax(commentService.updateComment(comment));
@@ -109,7 +106,7 @@ public class CommentController extends BaseController {
      * @param commentId 评论ID
      * @return 操作结果
      */
-    @PreAuthorize("@ss.hasPermi('documentary:comment:remove')")
+//    @PreAuthorize("@ss.hasPermi('documentary:comment:remove')")
     @GetMapping("/delete")
     public AjaxResult deleteComment(@RequestParam Long commentId) {
         return toAjax(commentService.deleteComment(commentId));
@@ -121,7 +118,7 @@ public class CommentController extends BaseController {
      * @param commentId 评论ID
      * @return 操作结果
      */
-    @PreAuthorize("@ss.hasPermi('documentary:comment:remove')")
+//    @PreAuthorize("@ss.hasPermi('documentary:comment:remove')")
     @GetMapping("/remove")
     public AjaxResult removeComment(@RequestParam Long commentId) {
         return toAjax(commentService.removeComment(commentId));
