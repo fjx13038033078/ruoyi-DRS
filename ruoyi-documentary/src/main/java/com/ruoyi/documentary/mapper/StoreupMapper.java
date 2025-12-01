@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.mapper;
 
 import com.ruoyi.documentary.domain.Storeup;
+import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -89,5 +90,12 @@ public interface StoreupMapper {
      * @return 删除成功返回影响的行数，否则返回0
      */
     int deleteStoreupByUserAndDocumentary(@Param("userId") Long userId, @Param("documentaryId") Long documentaryId);
+
+    /**
+     * 统计各时段用户行为数量
+     *
+     * @return 时段统计列表
+     */
+    List<TimePeriodStatisticsDTO> getTimePeriodStatistics();
 }
 

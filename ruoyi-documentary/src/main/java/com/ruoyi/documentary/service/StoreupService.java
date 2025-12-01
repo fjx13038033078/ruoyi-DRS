@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.service;
 
 import com.ruoyi.documentary.domain.Storeup;
+import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
 
 import java.util.List;
 
@@ -86,5 +87,12 @@ public interface StoreupService {
      * @return 取消成功返回 true，否则返回 false
      */
     boolean cancelCollection(Long userId, Long documentaryId);
+
+    /**
+     * 统计各时段用户行为数量
+     *
+     * @return 时段统计列表
+     */
+    List<TimePeriodStatisticsDTO> getTimePeriodStatistics();
 }
 

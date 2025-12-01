@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.mapper;
 
 import com.ruoyi.documentary.domain.Documentary;
+import com.ruoyi.documentary.domain.dto.YearStatisticsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -63,5 +64,12 @@ public interface DocumentaryMapper {
      * @return 更新成功返回影响的行数，否则返回0
      */
     int updateDocumentaryStatus(@Param("documentaryId") Long documentaryId, @Param("status") Integer status);
+
+    /**
+     * 统计各年份纪录片数量
+     *
+     * @return 年份统计列表
+     */
+    List<YearStatisticsDTO> getYearStatistics();
 }
 

@@ -89,5 +89,15 @@
         AND action_type = 3
     </delete>
 
+    <!-- 统计各时段用户行为数量 -->
+    <select id="getTimePeriodStatistics" resultType="com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO">
+        SELECT d.broadcast_time as timePeriod, COUNT(*) as count
+        FROM drs_storeup s
+        LEFT JOIN drs_documentary d ON s.documentary_id = d.documentary_id
+        WHERE d.broadcast_time IS NOT NULL
+        GROUP BY d.broadcast_time
+        ORDER BY d.broadcast_time ASC
+    </select>
+
 </mapper>
 

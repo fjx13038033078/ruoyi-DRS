@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.service.impl;
 
 import com.ruoyi.documentary.domain.Storeup;
+import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
 import com.ruoyi.documentary.mapper.StoreupMapper;
 import com.ruoyi.documentary.service.StoreupService;
 import lombok.RequiredArgsConstructor;
@@ -88,6 +89,11 @@ public class StoreupServiceImpl implements StoreupService {
     public boolean cancelCollection(Long userId, Long documentaryId) {
         int rows = storeupMapper.deleteStoreupByUserAndDocumentary(userId, documentaryId);
         return rows > 0;
+    }
+
+    @Override
+    public List<TimePeriodStatisticsDTO> getTimePeriodStatistics() {
+        return storeupMapper.getTimePeriodStatistics();
     }
 }
 

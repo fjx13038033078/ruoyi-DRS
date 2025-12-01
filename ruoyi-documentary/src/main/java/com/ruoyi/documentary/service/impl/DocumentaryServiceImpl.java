@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.service.impl;
 
 import com.ruoyi.documentary.domain.Documentary;
+import com.ruoyi.documentary.domain.dto.YearStatisticsDTO;
 import com.ruoyi.documentary.mapper.DocumentaryMapper;
 import com.ruoyi.documentary.service.DocumentaryService;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,11 @@ public class DocumentaryServiceImpl implements DocumentaryService {
     public boolean rejectDocumentary(Long documentaryId) {
         int rows = documentaryMapper.updateDocumentaryStatus(documentaryId, 3);
         return rows > 0;
+    }
+
+    @Override
+    public List<YearStatisticsDTO> getYearStatistics() {
+        return documentaryMapper.getYearStatistics();
     }
 }
 

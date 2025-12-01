@@ -97,5 +97,14 @@
         WHERE documentary_id = #{documentaryId}
     </update>
 
+    <!-- 统计各年份纪录片数量 -->
+    <select id="getYearStatistics" resultType="com.ruoyi.documentary.domain.dto.YearStatisticsDTO">
+        SELECT release_year as year, COUNT(*) as count
+        FROM drs_documentary
+        WHERE release_year IS NOT NULL AND status = 2
+        GROUP BY release_year
+        ORDER BY release_year ASC
+    </select>
+
 </mapper>
 
