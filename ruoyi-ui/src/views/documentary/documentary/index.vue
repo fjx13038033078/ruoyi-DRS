@@ -118,6 +118,23 @@
         stripe
         highlight-current-row>
         <el-table-column label="ID" prop="documentaryId" width="80" align="center"></el-table-column>
+        <el-table-column label="封面" prop="coverImageUrl" width="100" align="center">
+          <template slot-scope="scope">
+            <el-image
+              v-if="scope.row.coverImageUrl"
+              :src="scope.row.coverImageUrl"
+              :preview-src-list="[scope.row.coverImageUrl]"
+              fit="cover"
+              style="width: 60px; height: 80px; border-radius: 4px; cursor: pointer;">
+              <div slot="error" style="display: flex; justify-content: center; align-items: center; width: 60px; height: 80px; background: #f5f7fa; color: #909399; font-size: 12px;">
+                <i class="el-icon-picture-outline"></i>
+              </div>
+            </el-image>
+            <div v-else style="display: flex; justify-content: center; align-items: center; width: 60px; height: 80px; background: #f5f7fa; color: #909399; font-size: 12px;">
+              <i class="el-icon-picture-outline"></i>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="纪录片名称" prop="documentaryName" min-width="200" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column label="类型" prop="documentaryType" width="120" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column label="年份" prop="releaseYear" width="100" align="center"></el-table-column>
@@ -235,6 +252,18 @@
       :close-on-click-modal="false">
       <!-- 对话框内容 -->
       <div>
+        <!-- 封面图片预览 -->
+        <div v-if="documentaryForm.coverImageUrl" style="text-align: center; margin-bottom: 20px;">
+          <el-image
+            :src="documentaryForm.coverImageUrl"
+            :preview-src-list="[documentaryForm.coverImageUrl]"
+            fit="contain"
+            style="max-width: 300px; max-height: 400px; border-radius: 8px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);">
+            <div slot="error" style="display: flex; justify-content: center; align-items: center; width: 300px; height: 400px; background: #f5f7fa; color: #909399;">
+              <i class="el-icon-picture-outline" style="font-size: 50px;"></i>
+            </div>
+          </el-image>
+        </div>
         <el-form :model="documentaryForm" :rules="formRules" ref="documentaryForm" label-width="120px">
           <el-row :gutter="20">
             <el-col :span="12">
@@ -354,6 +383,14 @@
               maxlength="500"
               show-word-limit>
             </el-input>
+          </el-form-item>
+
+          <el-form-item label="封面图片URL" prop="coverImageUrl">
+            <el-input v-model="documentaryForm.coverImageUrl" :disabled="isReadOnly" placeholder="请输入封面图片URL"></el-input>
+          </el-form-item>
+
+          <el-form-item label="封面图片路径" prop="imagePath">
+            <el-input v-model="documentaryForm.imagePath" :disabled="isReadOnly" placeholder="请输入封面图片路径"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -497,7 +534,9 @@ export default {
         likeCount: 0,
         director: '',
         description: '',
-        broadcastTime: ''
+        broadcastTime: '',
+        coverImageUrl: '',
+        imagePath: ''
       },
       // 表单验证规则
       formRules: {
@@ -679,7 +718,9 @@ export default {
         likeCount: 0,
         director: '',
         description: '',
-        broadcastTime: ''
+        broadcastTime: '',
+        coverImageUrl: '',
+        imagePath: ''
       }
       // 重置表单验证
       if (this.$refs.documentaryForm) {

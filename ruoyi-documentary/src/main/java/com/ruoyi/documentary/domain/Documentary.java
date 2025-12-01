@@ -92,6 +92,16 @@ public class Documentary implements Serializable {
     private Integer status;
 
     /**
+     * 封面图片URL
+     */
+    private String coverImageUrl;
+
+    /**
+     * 封面图片路径
+     */
+    private String imagePath;
+
+    /**
      * 请求参数（用于额外的查询条件）
      */
     @TableField(exist = false)

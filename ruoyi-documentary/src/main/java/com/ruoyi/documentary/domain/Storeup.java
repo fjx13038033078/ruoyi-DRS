@@ -48,6 +48,18 @@ public class Storeup implements Serializable {
     private String documentaryName;
 
     /**
+     * 封面图片URL（不存在于数据库，用于显示）
+     */
+    @TableField(exist = false)
+    private String coverImageUrl;
+
+    /**
+     * 封面图片路径（不存在于数据库，用于显示）
+     */
+    @TableField(exist = false)
+    private String imagePath;
+
+    /**
      * 操作类型（1-查看，2-访问，3-收藏）
      */
     private Integer actionType;
