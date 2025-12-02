@@ -12,72 +12,177 @@
     </div>
     <div>
       <!-- 通知公告 -->
-      <el-row style="margin-top: 10px;">
-        <el-col :span="12">
-          <el-card style="margin-right: 20px; height: 420px;">
-            <h3 slot="header">通知公告</h3>
-            <el-table v-loading="loading" :data="noticeList">
-              <el-table-column label="序号" align="center" prop="noticeId" width="100"/>
-              <el-table-column
-                label="公告标题"
-                align="center"
-                prop="noticeTitle"
-                :show-overflow-tooltip="true"
-              >
-                <template slot-scope="scope">
-                  <span @click="showNoticeContent(scope.row)">{{ scope.row.noticeTitle }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="公告类型" align="center" prop="noticeType" width="100">
-                <template slot-scope="scope">
-                  <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="创建时间" align="center" prop="createTime" width="100">
-                <template slot-scope="scope">
-                  <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-card>
-        </el-col>
-        <el-col :span="12">
-          <el-card style="margin-right: 20px; height: 420px;">
-            <h3 slot="header">经典纪录片</h3>
-            <el-carousel :interval="5000" arrow="always">
-              <el-carousel-item>
-                <a href="https://www.baidu.com" target="_blank">
-                  <img src="../assets/images/01.jpg" alt="Image 1" style="width: 100%;">
-                </a>
-              </el-carousel-item>
-              <el-carousel-item>
-                <a href="https://www.jd.com" target="_blank">
-                  <img src="../assets/images/02.jpg" alt="Image 2" style="width: 100%;">
-                </a>
-              </el-carousel-item>
-              <el-carousel-item>
-                <a href="https://www.taobao.com" target="_blank">
-                  <img src="../assets/images/03.jpg" alt="Image 3" style="width: 100%;">
-                </a>
-              </el-carousel-item>
-            </el-carousel>
-          </el-card>
-        </el-col>
-      </el-row>
-<!--      <el-row style="margin-top: 20px;">-->
+<!--      <el-row style="margin-top: 10px;">-->
 <!--        <el-col :span="12">-->
 <!--          <el-card style="margin-right: 20px; height: 420px;">-->
-<!--            <h3 slot="header">学科挂科率</h3>-->
-<!--            <div id="failureRateChart" style="height: 300px;"></div> &lt;!&ndash; echarts 柱状图 &ndash;&gt;-->
+<!--            <h3 slot="header">通知公告</h3>-->
+<!--            <el-table v-loading="loading" :data="noticeList">-->
+<!--              <el-table-column label="序号" align="center" prop="noticeId" width="100"/>-->
+<!--              <el-table-column-->
+<!--                label="公告标题"-->
+<!--                align="center"-->
+<!--                prop="noticeTitle"-->
+<!--                :show-overflow-tooltip="true"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <span @click="showNoticeContent(scope.row)">{{ scope.row.noticeTitle }}</span>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column label="公告类型" align="center" prop="noticeType" width="100">-->
+<!--                <template slot-scope="scope">-->
+<!--                  <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType"/>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column label="创建时间" align="center" prop="createTime" width="100">-->
+<!--                <template slot-scope="scope">-->
+<!--                  <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--            </el-table>-->
 <!--          </el-card>-->
 <!--        </el-col>-->
 <!--        <el-col :span="12">-->
 <!--          <el-card style="margin-right: 20px; height: 420px;">-->
-<!--            <h3 slot="header">学科平均分</h3>-->
-<!--            <div id="averageScoreChart" style="height: 300px;"></div> &lt;!&ndash; echarts 柱状图 &ndash;&gt;-->
+<!--            <h3 slot="header">经典纪录片</h3>-->
+<!--            <el-carousel :interval="5000" arrow="always">-->
+<!--              <el-carousel-item>-->
+<!--                <a href="https://www.baidu.com" target="_blank">-->
+<!--                  <img src="../assets/images/01.jpg" alt="Image 1" style="width: 100%;">-->
+<!--                </a>-->
+<!--              </el-carousel-item>-->
+<!--              <el-carousel-item>-->
+<!--                <a href="https://www.jd.com" target="_blank">-->
+<!--                  <img src="../assets/images/02.jpg" alt="Image 2" style="width: 100%;">-->
+<!--                </a>-->
+<!--              </el-carousel-item>-->
+<!--              <el-carousel-item>-->
+<!--                <a href="https://www.taobao.com" target="_blank">-->
+<!--                  <img src="../assets/images/03.jpg" alt="Image 3" style="width: 100%;">-->
+<!--                </a>-->
+<!--              </el-carousel-item>-->
+<!--            </el-carousel>-->
 <!--          </el-card>-->
 <!--        </el-col>-->
 <!--      </el-row>-->
+
+      <!-- 推荐区域 -->
+      <el-row style="margin-top: 20px;">
+        <el-col :span="24">
+          <el-card style="margin-right: 20px;">
+            <div slot="header" style="display: flex; align-items: center;">
+              <i class="el-icon-view" style="font-size: 20px; color: #409eff; margin-right: 10px;"></i>
+              <h3 style="margin: 0; color: #303133;">其他人此时在看</h3>
+              <span style="margin-left: 10px; font-size: 12px; color: #909399;">基于当前时段的个性化推荐</span>
+            </div>
+            <div v-loading="watchingNowLoading">
+              <el-empty v-if="watchingNowList.length === 0" description="暂无推荐" :image-size="100"></el-empty>
+              <div v-else class="recommendation-grid">
+                <el-card
+                  v-for="doc in watchingNowList"
+                  :key="doc.documentaryId"
+                  shadow="hover"
+                  class="recommendation-card"
+                  @click.native="viewDocumentaryDetail(doc)">
+                  <div class="card-cover">
+                    <el-image
+                      v-if="doc.coverImageUrl"
+                      :src="doc.coverImageUrl"
+                      fit="cover"
+                      style="width: 100%; height: 180px; border-radius: 4px;">
+                      <div slot="error" class="image-error">
+                        <i class="el-icon-picture-outline"></i>
+                      </div>
+                    </el-image>
+                    <div v-else class="image-placeholder">
+                      <i class="el-icon-film"></i>
+                    </div>
+                  </div>
+                  <div class="card-header">
+                    <el-tag type="primary" size="small">{{ doc.documentaryType }}</el-tag>
+                    <el-tag v-if="doc.rating" :type="getRatingType(doc.rating)" size="small">
+                      {{ doc.rating.toFixed(1) }}分
+                    </el-tag>
+                  </div>
+                  <h4 class="doc-title">{{ doc.documentaryName }}</h4>
+                  <div class="doc-info">
+                    <div class="info-item">
+                      <i class="el-icon-user"></i>
+                      <span>{{ doc.director || '未知' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <i class="el-icon-date"></i>
+                      <span>{{ doc.releaseYear || '未知' }}</span>
+                    </div>
+                  </div>
+                  <div class="doc-stats">
+                    <span><i class="el-icon-view"></i> {{ formatNumber(doc.playCount) }}</span>
+                    <span><i class="el-icon-star-off"></i> {{ formatNumber(doc.likeCount) }}</span>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+
+      <el-row style="margin-top: 20px;">
+        <el-col :span="24">
+          <el-card style="margin-right: 20px;">
+            <div slot="header" style="display: flex; align-items: center;">
+              <i class="el-icon-star-on" style="font-size: 20px; color: #f56c6c; margin-right: 10px;"></i>
+              <h3 style="margin: 0; color: #303133;">猜你此时想看</h3>
+              <span style="margin-left: 10px; font-size: 12px; color: #909399;">基于高评分的个性化推荐</span>
+            </div>
+            <div v-loading="topRatedLoading">
+              <el-empty v-if="topRatedList.length === 0" description="暂无推荐" :image-size="100"></el-empty>
+              <div v-else class="recommendation-grid">
+                <el-card
+                  v-for="doc in topRatedList"
+                  :key="doc.documentaryId"
+                  shadow="hover"
+                  class="recommendation-card"
+                  @click.native="viewDocumentaryDetail(doc)">
+                  <div class="card-cover">
+                    <el-image
+                      v-if="doc.coverImageUrl"
+                      :src="doc.coverImageUrl"
+                      fit="cover"
+                      style="width: 100%; height: 180px; border-radius: 4px;">
+                      <div slot="error" class="image-error">
+                        <i class="el-icon-picture-outline"></i>
+                      </div>
+                    </el-image>
+                    <div v-else class="image-placeholder">
+                      <i class="el-icon-film"></i>
+                    </div>
+                  </div>
+                  <div class="card-header">
+                    <el-tag type="success" size="small">{{ doc.documentaryType }}</el-tag>
+                    <el-tag v-if="doc.rating" :type="getRatingType(doc.rating)" size="small">
+                      {{ doc.rating.toFixed(1) }}分
+                    </el-tag>
+                  </div>
+                  <h4 class="doc-title">{{ doc.documentaryName }}</h4>
+                  <div class="doc-info">
+                    <div class="info-item">
+                      <i class="el-icon-user"></i>
+                      <span>{{ doc.director || '未知' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <i class="el-icon-date"></i>
+                      <span>{{ doc.releaseYear || '未知' }}</span>
+                    </div>
+                  </div>
+                  <div class="doc-stats">
+                    <span><i class="el-icon-view"></i> {{ formatNumber(doc.playCount) }}</span>
+                    <span><i class="el-icon-star-off"></i> {{ formatNumber(doc.likeCount) }}</span>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
       <!-- 弹出的公告内容卡片 -->
       <el-dialog :title="selectedNotice.title" :visible.sync="showNoticeDialog" width="780px" append-to-body>
         <div slot="title" style="text-align: center;">{{ selectedNotice.title }}</div>
@@ -88,7 +193,7 @@
 </template>
 <script>
 import {listNotice, getNotice} from "@/api/system/notice";
-import * as echarts from 'echarts'
+import { getWatchingNowRecommendations, getTopRatedRecommendations } from "@/api/documentary/recommendation";
 import {parseTime} from "../utils/ruoyi";
 
 
@@ -140,11 +245,18 @@ export default {
         noticeType: [
           {required: true, message: "公告类型不能为空", trigger: "change"}
         ]
-      }
+      },
+      // 推荐数据
+      watchingNowList: [],
+      watchingNowLoading: false,
+      topRatedList: [],
+      topRatedLoading: false
     };
   },
   created() {
     this.getList();
+    this.loadWatchingNowRecommendations();
+    this.loadTopRatedRecommendations();
   },
   methods: {
     parseTime,
@@ -166,6 +278,67 @@ export default {
         this.loading = false;
       });
     },
+    // 加载"其他人此时在看"推荐
+    loadWatchingNowRecommendations() {
+      this.watchingNowLoading = true;
+      getWatchingNowRecommendations().then(response => {
+        this.watchingNowList = response.data || [];
+        this.watchingNowLoading = false;
+      }).catch(() => {
+        this.watchingNowList = [];
+        this.watchingNowLoading = false;
+      });
+    },
+    // 加载"猜你此时想看"推荐
+    loadTopRatedRecommendations() {
+      this.topRatedLoading = true;
+      getTopRatedRecommendations().then(response => {
+        this.topRatedList = response.data || [];
+        this.topRatedLoading = false;
+      }).catch(() => {
+        this.topRatedList = [];
+        this.topRatedLoading = false;
+      });
+    },
+    // 查看纪录片详情
+    viewDocumentaryDetail(doc) {
+      this.$alert(
+        `<div style="text-align: left;">
+          <p><strong>类型：</strong>${doc.documentaryType || '未知'}</p>
+          <p><strong>年份：</strong>${doc.releaseYear || '未知'}</p>
+          <p><strong>评分：</strong>${doc.rating ? doc.rating.toFixed(1) : '暂无'}</p>
+          <p><strong>导演/制作人：</strong>${doc.director || '未知'}</p>
+          <p><strong>播放时段：</strong>${doc.broadcastTime || '未知'}</p>
+          <p><strong>简介：</strong></p>
+          <p style="text-indent: 2em; line-height: 1.6;">${doc.description || '暂无简介'}</p>
+          ${doc.detailUrl ? `<p><a href="${doc.detailUrl}" target="_blank" style="color: #409eff;">查看详情页 →</a></p>` : ''}
+        </div>`,
+        doc.documentaryName,
+        {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: '关闭'
+        }
+      );
+    },
+    // 根据评分获取标签类型
+    getRatingType(rating) {
+      if (!rating) return 'info';
+      if (rating >= 9) return 'success';
+      if (rating >= 8) return 'primary';
+      if (rating >= 7) return 'warning';
+      return 'danger';
+    },
+    // 格式化数字
+    formatNumber(num) {
+      if (!num) return '0';
+      if (num >= 100000000) {
+        return (num / 100000000).toFixed(2) + '亿';
+      }
+      if (num >= 10000) {
+        return (num / 10000).toFixed(2) + '万';
+      }
+      return num.toString();
+    }
   }
 };
 </script>
@@ -297,5 +470,122 @@ export default {
   .subtitle {
     font-size: 14px;
   }
+}
+
+/* 推荐区域样式 */
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  margin-top: 10px;
+}
+
+@media screen and (max-width: 1400px) {
+  .recommendation-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .recommendation-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .recommendation-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.recommendation-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.recommendation-card .card-cover {
+  margin-bottom: 10px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.recommendation-card .image-error,
+.recommendation-card .image-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 50px;
+}
+
+.recommendation-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.recommendation-card .doc-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #303133;
+  margin: 10px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  min-height: 40px;
+  line-height: 1.4;
+}
+
+.recommendation-card .doc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 10px 0;
+  font-size: 12px;
+  color: #606266;
+}
+
+.recommendation-card .info-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.recommendation-card .info-item i {
+  color: #909399;
+}
+
+.recommendation-card .info-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recommendation-card .doc-stats {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid #ebeef5;
+  font-size: 12px;
+  color: #909399;
+}
+
+.recommendation-card .doc-stats span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 </style>
