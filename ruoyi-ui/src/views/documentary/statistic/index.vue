@@ -1,14 +1,5 @@
 <template>
   <div class="app-container">
-    <!-- 页面标题 -->
-    <div class="page-header">
-      <h2>
-        <i class="el-icon-data-line"></i>
-        数据统计分析
-      </h2>
-      <p class="subtitle">纪录片发布趋势与用户行为分析</p>
-    </div>
-
     <!-- 图表容器 -->
     <el-row :gutter="20" style="margin-top: 20px;">
       <!-- 纪录片发布年份趋势图 -->
@@ -372,27 +363,6 @@ export default {
 </script>
 
 <style scoped>
-.page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 30px;
-  border-radius: 10px;
-  color: white;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.page-header h2 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.page-header .subtitle {
-  margin: 10px 0 0 0;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
 .chart-card {
   border-radius: 8px;
   transition: all 0.3s;

@@ -173,6 +173,10 @@ export default {
   created() {
     this.fetchCollections()
   },
+  activated() {
+    // 每次组件激活时刷新收藏列表（解决页面切换不刷新的问题）
+    this.fetchCollections()
+  },
   methods: {
     // 获取收藏列表
     fetchCollections() {

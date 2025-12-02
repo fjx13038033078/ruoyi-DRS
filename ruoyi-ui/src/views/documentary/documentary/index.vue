@@ -185,7 +185,7 @@
               icon="el-icon-view"
               size="mini"
               @click="handleView(scope.row)"
-              v-hasPermi="['documentary:documentary:view']">
+              >
               查看
             </el-button>
             <el-button
@@ -824,7 +824,7 @@ export default {
             rating: this.commentForm.rating * 2,
             createBy: this.$store.state.user.name
           }
-          
+
           addComment(commentData).then(response => {
             if (response.code === 200) {
               this.$message.success('评论成功！')
