@@ -103,7 +103,7 @@
             icon="el-icon-plus"
             size="medium"
             @click="handleAddDocumentary"
-            v-hasPermi="['documentary:documentary:add']">
+            >
             新增纪录片
           </el-button>
         </el-col>
