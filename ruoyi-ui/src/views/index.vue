@@ -85,17 +85,13 @@
                   @click.native="viewDocumentaryDetail(doc)">
                   <div class="card-cover">
                     <el-image
-                      v-if="doc.coverImageUrl"
-                      :src="doc.coverImageUrl"
+                      :src="doc.coverImageUrl || defaultCover"
                       fit="cover"
                       style="width: 100%; height: 180px; border-radius: 4px;">
-                      <div slot="error" class="image-error">
-                        <i class="el-icon-picture-outline"></i>
+                      <div slot="error">
+                        <el-image :src="defaultCover" fit="cover" style="width: 100%; height: 180px; border-radius: 4px;"></el-image>
                       </div>
                     </el-image>
-                    <div v-else class="image-placeholder">
-                      <i class="el-icon-film"></i>
-                    </div>
                   </div>
                   <div class="card-header">
                     <el-tag type="primary" size="small">{{ doc.documentaryType }}</el-tag>
@@ -144,17 +140,13 @@
                   @click.native="viewDocumentaryDetail(doc)">
                   <div class="card-cover">
                     <el-image
-                      v-if="doc.coverImageUrl"
-                      :src="doc.coverImageUrl"
+                      :src="doc.coverImageUrl || defaultCover"
                       fit="cover"
                       style="width: 100%; height: 180px; border-radius: 4px;">
-                      <div slot="error" class="image-error">
-                        <i class="el-icon-picture-outline"></i>
+                      <div slot="error">
+                        <el-image :src="defaultCover" fit="cover" style="width: 100%; height: 180px; border-radius: 4px;"></el-image>
                       </div>
                     </el-image>
-                    <div v-else class="image-placeholder">
-                      <i class="el-icon-film"></i>
-                    </div>
                   </div>
                   <div class="card-header">
                     <el-tag type="success" size="small">{{ doc.documentaryType }}</el-tag>
@@ -195,6 +187,7 @@
 import {listNotice, getNotice} from "@/api/system/notice";
 import { getWatchingNowRecommendations, getTopRatedRecommendations } from "@/api/documentary/recommendation";
 import {parseTime} from "../utils/ruoyi";
+import defaultCoverImage from '@/assets/images/documentary-background.jpg'
 
 
 export default {
@@ -204,6 +197,8 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      // 兜底图片
+      defaultCover: defaultCoverImage,
       // 选中数组
       ids: [],
       // 非单个禁用

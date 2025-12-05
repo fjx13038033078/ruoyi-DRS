@@ -49,18 +49,14 @@
         <el-table-column label="封面" prop="coverImageUrl" width="100" align="center">
           <template slot-scope="scope">
             <el-image
-              v-if="scope.row.coverImageUrl"
-              :src="scope.row.coverImageUrl"
-              :preview-src-list="[scope.row.coverImageUrl]"
+              :src="scope.row.coverImageUrl || defaultCover"
+              :preview-src-list="[scope.row.coverImageUrl || defaultCover]"
               fit="cover"
               style="width: 60px; height: 80px; border-radius: 4px; cursor: pointer;">
-              <div slot="error" style="display: flex; justify-content: center; align-items: center; width: 60px; height: 80px; background: #f5f7fa; color: #909399; font-size: 12px;">
-                <i class="el-icon-picture-outline"></i>
+              <div slot="error">
+                <el-image :src="defaultCover" fit="cover" style="width: 60px; height: 80px; border-radius: 4px;"></el-image>
               </div>
             </el-image>
-            <div v-else style="display: flex; justify-content: center; align-items: center; width: 60px; height: 80px; background: #f5f7fa; color: #909399; font-size: 12px;">
-              <i class="el-icon-picture-outline"></i>
-            </div>
           </template>
         </el-table-column>
         <el-table-column label="纪录片名称" prop="documentaryName" min-width="200" align="center" show-overflow-tooltip></el-table-column>
@@ -139,14 +135,14 @@
       @close="handleCloseDialog">
       <div v-if="documentaryDetail">
         <!-- 封面图片预览 -->
-        <div v-if="documentaryDetail.coverImageUrl" style="text-align: center; margin-bottom: 20px;">
+        <div style="text-align: center; margin-bottom: 20px;">
           <el-image
-            :src="documentaryDetail.coverImageUrl"
-            :preview-src-list="[documentaryDetail.coverImageUrl]"
+            :src="documentaryDetail.coverImageUrl || defaultCover"
+            :preview-src-list="[documentaryDetail.coverImageUrl || defaultCover]"
             fit="contain"
             style="max-width: 300px; max-height: 400px; border-radius: 8px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);">
-            <div slot="error" style="display: flex; justify-content: center; align-items: center; width: 300px; height: 400px; background: #f5f7fa; color: #909399;">
-              <i class="el-icon-picture-outline" style="font-size: 50px;"></i>
+            <div slot="error">
+              <el-image :src="defaultCover" fit="contain" style="max-width: 300px; max-height: 400px; border-radius: 8px;"></el-image>
             </div>
           </el-image>
         </div>
@@ -218,6 +214,7 @@ import {
   approveDocumentary,
   rejectDocumentary
 } from '@/api/documentary/documentary'
+import defaultCoverImage from '@/assets/images/documentary-background.jpg'
 
 export default {
   name: 'DocumentaryApprove',
@@ -228,6 +225,8 @@ export default {
       dialogVisible: false,
       totalDocumentaries: 0,
       documentaryDetail: null,
+      // 兜底图片
+      defaultCover: defaultCoverImage,
       // 查询参数
       queryParams: {
         pageNum: 1,
