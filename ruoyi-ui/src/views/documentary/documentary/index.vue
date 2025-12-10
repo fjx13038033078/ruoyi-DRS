@@ -117,7 +117,7 @@
         border
         stripe
         highlight-current-row>
-        <el-table-column label="ID" prop="documentaryId" width="80" align="center"></el-table-column>
+        <el-table-column label="ID" prop="documentaryId" width="60" align="center"></el-table-column>
         <el-table-column label="封面" prop="coverImageUrl" width="100" align="center">
           <template slot-scope="scope">
             <el-image
@@ -132,31 +132,31 @@
           </template>
         </el-table-column>
         <el-table-column label="纪录片名称" prop="documentaryName" min-width="200" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column label="类型" prop="documentaryType" width="120" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column label="年份" prop="releaseYear" width="100" align="center"></el-table-column>
-        <el-table-column label="评分" prop="rating" width="100" align="center">
+        <el-table-column label="类型" prop="documentaryType" width="100" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column label="年份" prop="releaseYear" width="60" align="center"></el-table-column>
+        <el-table-column label="评分" prop="rating" width="60" align="center">
           <template slot-scope="scope">
             <el-tag :type="getRatingType(scope.row.rating)" size="medium">
               {{ scope.row.rating ? scope.row.rating.toFixed(1) : 'N/A' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="播放量" prop="playCount" width="120" align="center">
+        <el-table-column label="播放量" prop="playCount" width="60" align="center">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.playCount) }}
           </template>
         </el-table-column>
-        <el-table-column label="点赞数" prop="likeCount" width="120" align="center">
+        <el-table-column label="点赞数" prop="likeCount" width="60" align="center">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.likeCount) }}
           </template>
         </el-table-column>
-        <el-table-column label="导演/制作人" prop="director" width="150" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column label="导演/制作人" prop="director" width="100" align="center" show-overflow-tooltip></el-table-column>
         <el-table-column label="播放时段" prop="broadcastTime" width="120" align="center"></el-table-column>
         <el-table-column label="用户评分" prop="averageRating" width="100" align="center">
           <template slot-scope="scope">
             <el-rate
-              v-model="scope.row.averageRating"
+              :value="scope.row.averageRating ? scope.row.averageRating / 2 : 0"
               disabled
               show-score
               text-color="#ff9900"
@@ -165,16 +165,16 @@
               style="display: inline-block;">
             </el-rate>
             <div style="font-size: 12px; color: #909399;">
-              {{ scope.row.averageRating ? (scope.row.averageRating / 2).toFixed(1) : '暂无' }}
+              {{ scope.row.averageRating ? scope.row.averageRating.toFixed(1) : '暂无' }} 分
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="评论数" prop="commentCount" width="80" align="center">
+        <el-table-column label="评论数" prop="commentCount" width="60" align="center">
           <template slot-scope="scope">
             <el-tag type="info" size="small">{{ scope.row.commentCount || 0 }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="400" fixed="right">
+        <el-table-column label="操作" align="center" width="300" fixed="right">
           <template slot-scope="scope">
             <el-button
               type="text"
