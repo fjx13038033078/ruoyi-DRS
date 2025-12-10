@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.mapper;
 
 import com.ruoyi.documentary.domain.Documentary;
+import com.ruoyi.documentary.domain.dto.TypeStatisticsDTO;
 import com.ruoyi.documentary.domain.dto.YearStatisticsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -71,5 +72,12 @@ public interface DocumentaryMapper {
      * @return 年份统计列表
      */
     List<YearStatisticsDTO> getYearStatistics();
+
+    /**
+     * 统计各类型纪录片数量
+     *
+     * @return 类型统计列表
+     */
+    List<TypeStatisticsDTO> getTypeStatistics();
 }
 

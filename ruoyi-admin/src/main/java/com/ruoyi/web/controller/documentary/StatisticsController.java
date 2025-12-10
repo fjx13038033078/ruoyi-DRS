@@ -2,7 +2,9 @@ package com.ruoyi.web.controller.documentary;
 
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.documentary.domain.dto.ActionFunnelDTO;
 import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
+import com.ruoyi.documentary.domain.dto.TypeStatisticsDTO;
 import com.ruoyi.documentary.domain.dto.YearStatisticsDTO;
 import com.ruoyi.documentary.service.DocumentaryService;
 import com.ruoyi.documentary.service.StoreupService;
@@ -46,6 +48,28 @@ public class StatisticsController extends BaseController {
     @GetMapping("/timePeriod")
     public AjaxResult getTimePeriodStatistics() {
         List<TimePeriodStatisticsDTO> statistics = storeupService.getTimePeriodStatistics();
+        return AjaxResult.success(statistics);
+    }
+
+    /**
+     * 获取纪录片类型分布统计
+     *
+     * @return 类型统计数据
+     */
+    @GetMapping("/type")
+    public AjaxResult getTypeStatistics() {
+        List<TypeStatisticsDTO> statistics = documentaryService.getTypeStatistics();
+        return AjaxResult.success(statistics);
+    }
+
+    /**
+     * 获取用户行为漏斗统计
+     *
+     * @return 行为漏斗统计数据
+     */
+    @GetMapping("/actionFunnel")
+    public AjaxResult getActionFunnelStatistics() {
+        List<ActionFunnelDTO> statistics = storeupService.getActionFunnelStatistics();
         return AjaxResult.success(statistics);
     }
 }

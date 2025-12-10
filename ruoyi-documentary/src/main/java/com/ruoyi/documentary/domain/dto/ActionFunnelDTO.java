@@ -1,0 +1,36 @@
+package com.ruoyi.documentary.domain.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+/**
+ * 用户行为漏斗统计数据传输对象
+ *
+ * @Author 范佳兴
+ * @date 2024/12/10
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ActionFunnelDTO implements Serializable {
+    /**
+     * 行为名称（查看、访问、收藏）
+     */
+    private String actionName;
+
+    /**
+     * 行为类型（1-查看，2-访问，3-收藏）
+     */
+    private Integer actionType;
+
+    /**
+     * 行为数量
+     */
+    private Long count;
+
+    private static final long serialVersionUID = 1L;
+}
+

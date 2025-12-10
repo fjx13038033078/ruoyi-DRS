@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.mapper;
 
 import com.ruoyi.documentary.domain.Storeup;
+import com.ruoyi.documentary.domain.dto.ActionFunnelDTO;
 import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -97,5 +98,12 @@ public interface StoreupMapper {
      * @return 时段统计列表
      */
     List<TimePeriodStatisticsDTO> getTimePeriodStatistics();
+
+    /**
+     * 统计各类型用户行为数量（行为漏斗）
+     *
+     * @return 行为漏斗统计列表
+     */
+    List<ActionFunnelDTO> getActionFunnelStatistics();
 }
 

@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.service.impl;
 
 import com.ruoyi.documentary.domain.Storeup;
+import com.ruoyi.documentary.domain.dto.ActionFunnelDTO;
 import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
 import com.ruoyi.documentary.mapper.StoreupMapper;
 import com.ruoyi.documentary.service.StoreupService;
@@ -94,6 +95,11 @@ public class StoreupServiceImpl implements StoreupService {
     @Override
     public List<TimePeriodStatisticsDTO> getTimePeriodStatistics() {
         return storeupMapper.getTimePeriodStatistics();
+    }
+
+    @Override
+    public List<ActionFunnelDTO> getActionFunnelStatistics() {
+        return storeupMapper.getActionFunnelStatistics();
     }
 }
 

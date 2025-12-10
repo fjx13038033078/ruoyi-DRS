@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.service.impl;
 
 import com.ruoyi.documentary.domain.Documentary;
+import com.ruoyi.documentary.domain.dto.TypeStatisticsDTO;
 import com.ruoyi.documentary.domain.dto.YearStatisticsDTO;
 import com.ruoyi.documentary.mapper.DocumentaryMapper;
 import com.ruoyi.documentary.service.DocumentaryService;
@@ -67,6 +68,11 @@ public class DocumentaryServiceImpl implements DocumentaryService {
     @Override
     public List<YearStatisticsDTO> getYearStatistics() {
         return documentaryMapper.getYearStatistics();
+    }
+
+    @Override
+    public List<TypeStatisticsDTO> getTypeStatistics() {
+        return documentaryMapper.getTypeStatistics();
     }
 }
 

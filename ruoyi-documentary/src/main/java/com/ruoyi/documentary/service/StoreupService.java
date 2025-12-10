@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.service;
 
 import com.ruoyi.documentary.domain.Storeup;
+import com.ruoyi.documentary.domain.dto.ActionFunnelDTO;
 import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
 
 import java.util.List;
@@ -94,5 +95,12 @@ public interface StoreupService {
      * @return 时段统计列表
      */
     List<TimePeriodStatisticsDTO> getTimePeriodStatistics();
+
+    /**
+     * 统计各类型用户行为数量（行为漏斗）
+     *
+     * @return 行为漏斗统计列表
+     */
+    List<ActionFunnelDTO> getActionFunnelStatistics();
 }
 

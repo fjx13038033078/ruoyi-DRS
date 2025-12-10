@@ -1,6 +1,7 @@
 package com.ruoyi.documentary.service;
 
 import com.ruoyi.documentary.domain.Documentary;
+import com.ruoyi.documentary.domain.dto.TypeStatisticsDTO;
 import com.ruoyi.documentary.domain.dto.YearStatisticsDTO;
 
 import java.util.List;
@@ -75,5 +76,12 @@ public interface DocumentaryService {
      * @return 年份统计列表
      */
     List<YearStatisticsDTO> getYearStatistics();
+
+    /**
+     * 统计各类型纪录片数量
+     *
+     * @return 类型统计列表
+     */
+    List<TypeStatisticsDTO> getTypeStatistics();
 }
 

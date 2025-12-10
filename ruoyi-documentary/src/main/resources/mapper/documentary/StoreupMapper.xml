@@ -99,5 +99,21 @@
         ORDER BY d.broadcast_time ASC
     </select>
 
+    <!-- 统计各类型用户行为数量（行为漏斗） -->
+    <select id="getActionFunnelStatistics" resultType="com.ruoyi.documentary.domain.dto.ActionFunnelDTO">
+        SELECT 
+            CASE action_type
+                WHEN 1 THEN '查看'
+                WHEN 2 THEN '访问'
+                WHEN 3 THEN '收藏'
+                ELSE '未知'
+            END as actionName,
+            action_type as actionType,
+            COUNT(*) as count
+        FROM drs_storeup
+        GROUP BY action_type
+        ORDER BY action_type ASC
+    </select>
+
 </mapper>
 

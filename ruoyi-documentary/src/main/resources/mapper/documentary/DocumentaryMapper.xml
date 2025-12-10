@@ -106,5 +106,14 @@
         ORDER BY release_year ASC
     </select>
 
+    <!-- 统计各类型纪录片数量 -->
+    <select id="getTypeStatistics" resultType="com.ruoyi.documentary.domain.dto.TypeStatisticsDTO">
+        SELECT documentary_type as type, COUNT(*) as count
+        FROM drs_documentary
+        WHERE documentary_type IS NOT NULL AND documentary_type != '' AND status = 2
+        GROUP BY documentary_type
+        ORDER BY count DESC
+    </select>
+
 </mapper>
 
