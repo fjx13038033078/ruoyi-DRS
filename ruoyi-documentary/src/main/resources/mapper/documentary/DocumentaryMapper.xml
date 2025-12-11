@@ -20,6 +20,10 @@
         <result property="status" column="status"/>
         <result property="coverImageUrl" column="cover_image_url"/>
         <result property="imagePath" column="image_path"/>
+        <result property="uploadUserId" column="upload_user_id"/>
+        <result property="rejectReason" column="reject_reason"/>
+        <result property="reviewTime" column="review_time"/>
+        <result property="reviewBy" column="review_by"/>
     </resultMap>
 
     <!-- 获取所有纪录片 -->
@@ -56,6 +60,9 @@
             <if test="params.maxLikeCount != null">
                 AND like_count &lt;= #{params.maxLikeCount}
             </if>
+            <if test="uploadUserId != null">
+                AND upload_user_id = #{uploadUserId}
+            </if>
         </where>
         ORDER BY documentary_id DESC
     </select>
@@ -67,8 +74,8 @@
 
     <!-- 添加纪录片 -->
     <insert id="addDocumentary" parameterType="Documentary">
-        INSERT INTO drs_documentary (documentary_name, detail_url, play_count, documentary_type, release_year, total_episodes, rating, like_count, director, description, broadcast_time, status, cover_image_url, image_path)
-        VALUES (#{documentaryName}, #{detailUrl}, #{playCount}, #{documentaryType}, #{releaseYear}, #{totalEpisodes}, #{rating}, #{likeCount}, #{director}, #{description}, #{broadcastTime}, COALESCE(#{status}, 1), #{coverImageUrl}, #{imagePath})
+        INSERT INTO drs_documentary (documentary_name, detail_url, play_count, documentary_type, release_year, total_episodes, rating, like_count, director, description, broadcast_time, status, cover_image_url, image_path, upload_user_id)
+        VALUES (#{documentaryName}, #{detailUrl}, #{playCount}, #{documentaryType}, #{releaseYear}, #{totalEpisodes}, #{rating}, #{likeCount}, #{director}, #{description}, #{broadcastTime}, COALESCE(#{status}, 1), #{coverImageUrl}, #{imagePath}, #{uploadUserId})
     </insert>
 
     <!-- 更新纪录片信息 -->
@@ -90,12 +97,32 @@
         DELETE FROM drs_documentary WHERE documentary_id = #{documentaryId}
     </delete>
 
-    <!-- 更新纪录片审核状态 -->
+    <!-- 更新纪录片审核状态（审核通过） -->
     <update id="updateDocumentaryStatus">
         UPDATE drs_documentary
-        SET status = #{status}
+        SET status = #{status},
+            review_time = NOW(),
+            review_by = #{reviewBy},
+            reject_reason = NULL
         WHERE documentary_id = #{documentaryId}
     </update>
+
+    <!-- 更新纪录片审核状态（审核拒绝，含理由） -->
+    <update id="rejectDocumentaryWithReason">
+        UPDATE drs_documentary
+        SET status = 3,
+            review_time = NOW(),
+            review_by = #{reviewBy},
+            reject_reason = #{rejectReason}
+        WHERE documentary_id = #{documentaryId}
+    </update>
+
+    <!-- 根据用户ID获取上传的纪录片列表 -->
+    <select id="getDocumentariesByUserId" parameterType="Long" resultMap="DocumentaryResult">
+        SELECT * FROM drs_documentary
+        WHERE upload_user_id = #{userId}
+        ORDER BY documentary_id DESC
+    </select>
 
     <!-- 统计各年份纪录片数量 -->
     <select id="getYearStatistics" resultType="com.ruoyi.documentary.domain.dto.YearStatisticsDTO">

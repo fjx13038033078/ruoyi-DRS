@@ -54,12 +54,21 @@ export function approveDocumentary(documentaryId) {
   })
 }
 
-// 审核不通过纪录片
-export function rejectDocumentary(documentaryId) {
+// 审核不通过纪录片（含拒绝理由）
+export function rejectDocumentary(documentaryId, rejectReason) {
   return request({
     url: '/documentary/documentary/reject',
     method: 'get',
-    params: { documentaryId }
+    params: { documentaryId, rejectReason }
+  })
+}
+
+// 获取当前用户上传的纪录片列表
+export function getMyUploads(query) {
+  return request({
+    url: '/documentary/documentary/myUploads',
+    method: 'get',
+    params: query
   })
 }
 

@@ -59,24 +59,35 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column label="纪录片名称" prop="documentaryName" min-width="200" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column label="类型" prop="documentaryType" width="120" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column label="年份" prop="releaseYear" width="100" align="center"></el-table-column>
-        <el-table-column label="评分" prop="rating" width="100" align="center">
+        <el-table-column label="纪录片名称" prop="documentaryName" min-width="180" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column label="类型" prop="documentaryType" width="100" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column label="年份" prop="releaseYear" width="80" align="center"></el-table-column>
+        <el-table-column label="评分" prop="rating" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="getRatingType(scope.row.rating)" size="medium">
               {{ scope.row.rating ? scope.row.rating.toFixed(1) : 'N/A' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="导演/制作人" prop="director" width="150" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column label="审核状态" prop="status" width="120" align="center">
+        <el-table-column label="审核状态" prop="status" width="100" align="center">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status === 1" type="warning" size="small">未审核</el-tag>
             <el-tag v-else-if="scope.row.status === 3" type="danger" size="small">审核不通过</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="300" fixed="right">
+        <el-table-column label="拒绝理由" prop="rejectReason" min-width="150" align="center" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <span v-if="scope.row.rejectReason" style="color: #f56c6c;">{{ scope.row.rejectReason }}</span>
+            <span v-else style="color: #909399;">-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核人" prop="reviewBy" width="100" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.reviewBy">{{ scope.row.reviewBy }}</span>
+            <span v-else style="color: #909399;">-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="280" fixed="right">
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -180,6 +191,15 @@
             <el-tag v-if="documentaryDetail.status === 1" type="warning">未审核</el-tag>
             <el-tag v-else-if="documentaryDetail.status === 3" type="danger">审核不通过</el-tag>
           </el-descriptions-item>
+          <el-descriptions-item v-if="documentaryDetail.rejectReason" label="拒绝理由" :span="2">
+            <span style="color: #f56c6c;">{{ documentaryDetail.rejectReason }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item v-if="documentaryDetail.reviewBy" label="审核人">
+            {{ documentaryDetail.reviewBy }}
+          </el-descriptions-item>
+          <el-descriptions-item v-if="documentaryDetail.reviewTime" label="审核时间">
+            {{ formatDateTime(documentaryDetail.reviewTime) }}
+          </el-descriptions-item>
           <el-descriptions-item label="详情页链接" :span="2">
             <el-link v-if="documentaryDetail.detailUrl" :href="documentaryDetail.detailUrl" target="_blank" type="primary">
               <i class="el-icon-link"></i> 点击访问
@@ -203,6 +223,33 @@
         </el-button>
       </div>
     </el-dialog>
+
+    <!-- 审核拒绝理由对话框 -->
+    <el-dialog
+      :visible.sync="rejectDialogVisible"
+      title="审核拒绝"
+      width="500px"
+      @close="handleCloseRejectDialog">
+      <el-form :model="rejectForm" :rules="rejectRules" ref="rejectForm" label-width="100px">
+        <el-form-item label="纪录片名称">
+          <span style="font-weight: bold;">{{ rejectForm.documentaryName }}</span>
+        </el-form-item>
+        <el-form-item label="拒绝理由" prop="rejectReason">
+          <el-input
+            v-model="rejectForm.rejectReason"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入拒绝理由（必填）"
+            maxlength="500"
+            show-word-limit>
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="rejectDialogVisible = false">取 消</el-button>
+        <el-button type="warning" @click="submitReject">确认拒绝</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -215,6 +262,7 @@ import {
   rejectDocumentary
 } from '@/api/documentary/documentary'
 import defaultCoverImage from '@/assets/images/documentary-background.jpg'
+import dayjs from 'dayjs'
 
 export default {
   name: 'DocumentaryApprove',
@@ -236,6 +284,19 @@ export default {
         params: {
           showPendingAndRejected: 'yes' // 显示未审核和审核不通过的
         }
+      },
+      // 拒绝对话框
+      rejectDialogVisible: false,
+      rejectForm: {
+        documentaryId: null,
+        documentaryName: '',
+        rejectReason: ''
+      },
+      rejectRules: {
+        rejectReason: [
+          { required: true, message: '请输入拒绝理由', trigger: 'blur' },
+          { min: 5, message: '拒绝理由至少5个字符', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -327,20 +388,35 @@ export default {
         this.$message.info('已取消审核')
       })
     },
-    // 审核不通过
+    // 打开审核拒绝对话框
     handleReject(row) {
-      this.$confirm('确认审核不通过该纪录片吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        rejectDocumentary(row.documentaryId).then(() => {
-          this.$message.success('已标记为审核不通过')
-          this.fetchDocumentaries()
-        })
-      }).catch(() => {
-        this.$message.info('已取消操作')
+      this.rejectForm = {
+        documentaryId: row.documentaryId,
+        documentaryName: row.documentaryName,
+        rejectReason: ''
+      }
+      this.rejectDialogVisible = true
+    },
+    // 提交审核拒绝
+    submitReject() {
+      this.$refs.rejectForm.validate(valid => {
+        if (valid) {
+          rejectDocumentary(this.rejectForm.documentaryId, this.rejectForm.rejectReason).then(() => {
+            this.$message.success('已标记为审核不通过')
+            this.rejectDialogVisible = false
+            this.fetchDocumentaries()
+          }).catch(() => {
+            this.$message.error('操作失败')
+          })
+        }
       })
+    },
+    // 关闭拒绝对话框
+    handleCloseRejectDialog() {
+      this.rejectDialogVisible = false
+      if (this.$refs.rejectForm) {
+        this.$refs.rejectForm.resetFields()
+      }
     },
     // 从详情对话框审核通过
     handleApproveFromDialog() {
@@ -374,6 +450,11 @@ export default {
         return (num / 10000).toFixed(2) + '万'
       }
       return num.toString()
+    },
+    // 格式化日期时间
+    formatDateTime(datetime) {
+      if (!datetime) return ''
+      return dayjs(datetime).format('YYYY-MM-DD HH:mm:ss')
     }
   }
 }
@@ -398,4 +479,3 @@ export default {
   background: #fafafa;
 }
 </style>
-

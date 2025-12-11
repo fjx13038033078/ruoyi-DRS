@@ -58,17 +58,28 @@ public interface DocumentaryService {
      * 审核通过纪录片
      *
      * @param documentaryId 纪录片ID
+     * @param reviewBy 审核人
      * @return 审核成功返回 true，否则返回 false
      */
-    boolean approveDocumentary(Long documentaryId);
+    boolean approveDocumentary(Long documentaryId, String reviewBy);
 
     /**
-     * 审核不通过纪录片
+     * 审核不通过纪录片（含拒绝理由）
      *
      * @param documentaryId 纪录片ID
+     * @param rejectReason 拒绝理由
+     * @param reviewBy 审核人
      * @return 审核成功返回 true，否则返回 false
      */
-    boolean rejectDocumentary(Long documentaryId);
+    boolean rejectDocumentary(Long documentaryId, String rejectReason, String reviewBy);
+
+    /**
+     * 根据用户ID获取上传的纪录片列表
+     *
+     * @param userId 用户ID
+     * @return 纪录片列表
+     */
+    List<Documentary> getDocumentariesByUserId(Long userId);
 
     /**
      * 统计各年份纪录片数量

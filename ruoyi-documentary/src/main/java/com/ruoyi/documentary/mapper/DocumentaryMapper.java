@@ -58,13 +58,32 @@ public interface DocumentaryMapper {
     int deleteDocumentary(Long documentaryId);
 
     /**
-     * 更新纪录片审核状态
+     * 更新纪录片审核状态（审核通过）
      *
      * @param documentaryId 纪录片ID
      * @param status 审核状态（1-未审核，2-审核通过，3-审核不通过）
+     * @param reviewBy 审核人
      * @return 更新成功返回影响的行数，否则返回0
      */
-    int updateDocumentaryStatus(@Param("documentaryId") Long documentaryId, @Param("status") Integer status);
+    int updateDocumentaryStatus(@Param("documentaryId") Long documentaryId, @Param("status") Integer status, @Param("reviewBy") String reviewBy);
+
+    /**
+     * 审核拒绝纪录片（含拒绝理由）
+     *
+     * @param documentaryId 纪录片ID
+     * @param rejectReason 拒绝理由
+     * @param reviewBy 审核人
+     * @return 更新成功返回影响的行数，否则返回0
+     */
+    int rejectDocumentaryWithReason(@Param("documentaryId") Long documentaryId, @Param("rejectReason") String rejectReason, @Param("reviewBy") String reviewBy);
+
+    /**
+     * 根据用户ID获取上传的纪录片列表
+     *
+     * @param userId 用户ID
+     * @return 纪录片列表
+     */
+    List<Documentary> getDocumentariesByUserId(Long userId);
 
     /**
      * 统计各年份纪录片数量

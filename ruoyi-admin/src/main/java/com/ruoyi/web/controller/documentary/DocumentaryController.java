@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.documentary;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.documentary.domain.Documentary;
 import com.ruoyi.documentary.service.DocumentaryService;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,8 @@ public class DocumentaryController extends BaseController {
      */
     @PostMapping("/add")
     public AjaxResult addDocumentary(@RequestBody Documentary documentary) {
+        // 设置上传者用户ID
+        documentary.setUploadUserId(SecurityUtils.getUserId());
         return toAjax(documentaryService.addDocumentary(documentary));
     }
 
@@ -88,18 +91,34 @@ public class DocumentaryController extends BaseController {
      */
     @GetMapping("/approve")
     public AjaxResult approveDocumentary(@RequestParam Long documentaryId) {
-        return toAjax(documentaryService.approveDocumentary(documentaryId));
+        String reviewBy = SecurityUtils.getUsername();
+        return toAjax(documentaryService.approveDocumentary(documentaryId, reviewBy));
     }
 
     /**
-     * 审核不通过纪录片
+     * 审核不通过纪录片（含拒绝理由）
      *
      * @param documentaryId 纪录片ID
+     * @param rejectReason 拒绝理由
      * @return 操作结果
      */
     @GetMapping("/reject")
-    public AjaxResult rejectDocumentary(@RequestParam Long documentaryId) {
-        return toAjax(documentaryService.rejectDocumentary(documentaryId));
+    public AjaxResult rejectDocumentary(@RequestParam Long documentaryId, @RequestParam String rejectReason) {
+        String reviewBy = SecurityUtils.getUsername();
+        return toAjax(documentaryService.rejectDocumentary(documentaryId, rejectReason, reviewBy));
+    }
+
+    /**
+     * 获取当前用户上传的纪录片列表
+     *
+     * @return 纪录片列表
+     */
+    @GetMapping("/myUploads")
+    public TableDataInfo getMyUploads() {
+        startPage();
+        Long userId = SecurityUtils.getUserId();
+        List<Documentary> documentaries = documentaryService.getDocumentariesByUserId(userId);
+        return getDataTable(documentaries);
     }
 }
 

@@ -54,15 +54,20 @@ public class DocumentaryServiceImpl implements DocumentaryService {
     }
 
     @Override
-    public boolean approveDocumentary(Long documentaryId) {
-        int rows = documentaryMapper.updateDocumentaryStatus(documentaryId, 2);
+    public boolean approveDocumentary(Long documentaryId, String reviewBy) {
+        int rows = documentaryMapper.updateDocumentaryStatus(documentaryId, 2, reviewBy);
         return rows > 0;
     }
 
     @Override
-    public boolean rejectDocumentary(Long documentaryId) {
-        int rows = documentaryMapper.updateDocumentaryStatus(documentaryId, 3);
+    public boolean rejectDocumentary(Long documentaryId, String rejectReason, String reviewBy) {
+        int rows = documentaryMapper.rejectDocumentaryWithReason(documentaryId, rejectReason, reviewBy);
         return rows > 0;
+    }
+
+    @Override
+    public List<Documentary> getDocumentariesByUserId(Long userId) {
+        return documentaryMapper.getDocumentariesByUserId(userId);
     }
 
     @Override

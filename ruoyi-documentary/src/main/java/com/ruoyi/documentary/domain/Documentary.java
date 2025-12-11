@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,6 +101,32 @@ public class Documentary implements Serializable {
      * 封面图片路径
      */
     private String imagePath;
+
+    /**
+     * 上传者用户ID
+     */
+    private Long uploadUserId;
+
+    /**
+     * 审核不通过理由
+     */
+    private String rejectReason;
+
+    /**
+     * 审核时间
+     */
+    private Date reviewTime;
+
+    /**
+     * 审核人
+     */
+    private String reviewBy;
+
+    /**
+     * 上传者用户名（非数据库字段）
+     */
+    @TableField(exist = false)
+    private String uploadUserName;
 
     /**
      * 请求参数（用于额外的查询条件）
