@@ -3,6 +3,8 @@ package com.ruoyi.documentary.service;
 import com.ruoyi.documentary.domain.Storeup;
 import com.ruoyi.documentary.domain.dto.ActionFunnelDTO;
 import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
+import com.ruoyi.documentary.domain.dto.TypeStatisticsDTO;
+import com.ruoyi.documentary.domain.dto.UserActionTrendDTO;
 
 import java.util.List;
 
@@ -102,5 +104,21 @@ public interface StoreupService {
      * @return 行为漏斗统计列表
      */
     List<ActionFunnelDTO> getActionFunnelStatistics();
+
+    /**
+     * 统计用户收藏的纪录片类型分布
+     *
+     * @param userId 用户ID
+     * @return 类型统计列表
+     */
+    List<TypeStatisticsDTO> getUserCollectionTypeStatistics(Long userId);
+
+    /**
+     * 统计用户近30天的行为趋势
+     *
+     * @param userId 用户ID
+     * @return 行为趋势列表
+     */
+    List<UserActionTrendDTO> getUserActionTrend(Long userId);
 }
 

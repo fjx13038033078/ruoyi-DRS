@@ -115,5 +115,32 @@
         ORDER BY action_type ASC
     </select>
 
+    <!-- 统计用户收藏的纪录片类型分布 -->
+    <select id="getUserCollectionTypeStatistics" resultType="com.ruoyi.documentary.domain.dto.TypeStatisticsDTO">
+        SELECT d.documentary_type as type, COUNT(*) as count
+        FROM drs_storeup s
+        LEFT JOIN drs_documentary d ON s.documentary_id = d.documentary_id
+        WHERE s.user_id = #{userId}
+          AND s.action_type = 3
+          AND d.documentary_type IS NOT NULL
+          AND d.documentary_type != ''
+        GROUP BY d.documentary_type
+        ORDER BY count DESC
+    </select>
+
+    <!-- 统计用户近30天的行为趋势 -->
+    <select id="getUserActionTrend" resultType="com.ruoyi.documentary.domain.dto.UserActionTrendDTO">
+        SELECT 
+            DATE(action_time) as actionDate,
+            SUM(CASE WHEN action_type = 1 THEN 1 ELSE 0 END) as viewCount,
+            SUM(CASE WHEN action_type = 2 THEN 1 ELSE 0 END) as accessCount,
+            SUM(CASE WHEN action_type = 3 THEN 1 ELSE 0 END) as collectCount
+        FROM drs_storeup
+        WHERE user_id = #{userId}
+          AND action_time >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+        GROUP BY DATE(action_time)
+        ORDER BY actionDate ASC
+    </select>
+
 </mapper>
 

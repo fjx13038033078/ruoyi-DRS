@@ -3,6 +3,8 @@ package com.ruoyi.documentary.service.impl;
 import com.ruoyi.documentary.domain.Storeup;
 import com.ruoyi.documentary.domain.dto.ActionFunnelDTO;
 import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
+import com.ruoyi.documentary.domain.dto.TypeStatisticsDTO;
+import com.ruoyi.documentary.domain.dto.UserActionTrendDTO;
 import com.ruoyi.documentary.mapper.StoreupMapper;
 import com.ruoyi.documentary.service.StoreupService;
 import lombok.RequiredArgsConstructor;
@@ -100,6 +102,16 @@ public class StoreupServiceImpl implements StoreupService {
     @Override
     public List<ActionFunnelDTO> getActionFunnelStatistics() {
         return storeupMapper.getActionFunnelStatistics();
+    }
+
+    @Override
+    public List<TypeStatisticsDTO> getUserCollectionTypeStatistics(Long userId) {
+        return storeupMapper.getUserCollectionTypeStatistics(userId);
+    }
+
+    @Override
+    public List<UserActionTrendDTO> getUserActionTrend(Long userId) {
+        return storeupMapper.getUserActionTrend(userId);
     }
 }
 

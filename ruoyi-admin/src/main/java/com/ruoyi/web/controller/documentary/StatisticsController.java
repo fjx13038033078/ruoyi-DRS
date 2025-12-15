@@ -2,9 +2,11 @@ package com.ruoyi.web.controller.documentary;
 
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.documentary.domain.dto.ActionFunnelDTO;
 import com.ruoyi.documentary.domain.dto.TimePeriodStatisticsDTO;
 import com.ruoyi.documentary.domain.dto.TypeStatisticsDTO;
+import com.ruoyi.documentary.domain.dto.UserActionTrendDTO;
 import com.ruoyi.documentary.domain.dto.YearStatisticsDTO;
 import com.ruoyi.documentary.service.DocumentaryService;
 import com.ruoyi.documentary.service.StoreupService;
@@ -70,6 +72,30 @@ public class StatisticsController extends BaseController {
     @GetMapping("/actionFunnel")
     public AjaxResult getActionFunnelStatistics() {
         List<ActionFunnelDTO> statistics = storeupService.getActionFunnelStatistics();
+        return AjaxResult.success(statistics);
+    }
+
+    /**
+     * 获取当前用户收藏类型分布统计（普通用户个人数据）
+     *
+     * @return 用户收藏类型统计数据
+     */
+    @GetMapping("/myCollectionType")
+    public AjaxResult getMyCollectionTypeStatistics() {
+        Long userId = SecurityUtils.getUserId();
+        List<TypeStatisticsDTO> statistics = storeupService.getUserCollectionTypeStatistics(userId);
+        return AjaxResult.success(statistics);
+    }
+
+    /**
+     * 获取当前用户近30天行为趋势统计（普通用户个人数据）
+     *
+     * @return 用户行为趋势统计数据
+     */
+    @GetMapping("/myActionTrend")
+    public AjaxResult getMyActionTrend() {
+        Long userId = SecurityUtils.getUserId();
+        List<UserActionTrendDTO> statistics = storeupService.getUserActionTrend(userId);
         return AjaxResult.success(statistics);
     }
 }
