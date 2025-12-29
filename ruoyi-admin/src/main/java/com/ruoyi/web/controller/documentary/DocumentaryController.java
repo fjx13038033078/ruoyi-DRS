@@ -1,8 +1,10 @@
 package com.ruoyi.web.controller.documentary;
 
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.documentary.domain.Documentary;
 import com.ruoyi.documentary.service.DocumentaryService;
@@ -54,6 +56,7 @@ public class DocumentaryController extends BaseController {
      * @param documentary 待添加的纪录片信息
      * @return 操作结果
      */
+    @Log(title = "纪录片管理", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public AjaxResult addDocumentary(@RequestBody Documentary documentary) {
         // 设置上传者用户ID
@@ -67,6 +70,7 @@ public class DocumentaryController extends BaseController {
      * @param documentary 待更新的纪录片信息
      * @return 操作结果
      */
+    @Log(title = "纪录片管理", businessType = BusinessType.UPDATE)
     @PostMapping("/update")
     public AjaxResult updateDocumentary(@RequestBody Documentary documentary) {
         return toAjax(documentaryService.updateDocumentary(documentary));
@@ -78,6 +82,7 @@ public class DocumentaryController extends BaseController {
      * @param documentaryId 待删除的纪录片ID
      * @return 操作结果
      */
+    @Log(title = "纪录片管理", businessType = BusinessType.DELETE)
     @GetMapping("/delete")
     public AjaxResult deleteDocumentary(@RequestParam Long documentaryId) {
         return toAjax(documentaryService.deleteDocumentary(documentaryId));
@@ -89,6 +94,7 @@ public class DocumentaryController extends BaseController {
      * @param documentaryId 纪录片ID
      * @return 操作结果
      */
+    @Log(title = "纪录片审核", businessType = BusinessType.UPDATE)
     @GetMapping("/approve")
     public AjaxResult approveDocumentary(@RequestParam Long documentaryId) {
         String reviewBy = SecurityUtils.getUsername();
@@ -102,6 +108,7 @@ public class DocumentaryController extends BaseController {
      * @param rejectReason 拒绝理由
      * @return 操作结果
      */
+    @Log(title = "纪录片审核", businessType = BusinessType.UPDATE)
     @GetMapping("/reject")
     public AjaxResult rejectDocumentary(@RequestParam Long documentaryId, @RequestParam String rejectReason) {
         String reviewBy = SecurityUtils.getUsername();

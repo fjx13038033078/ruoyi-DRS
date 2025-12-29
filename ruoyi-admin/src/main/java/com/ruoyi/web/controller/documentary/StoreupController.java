@@ -1,8 +1,10 @@
 package com.ruoyi.web.controller.documentary;
 
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.documentary.domain.Storeup;
 import com.ruoyi.documentary.service.StoreupService;
 import lombok.RequiredArgsConstructor;
@@ -80,6 +82,7 @@ public class StoreupController extends BaseController {
      * @param storeup 待添加的行为记录信息
      * @return 操作结果
      */
+    @Log(title = "用户行为记录", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public AjaxResult addStoreup(@RequestBody Storeup storeup) {
         return toAjax(storeupService.addStoreup(storeup));
@@ -91,6 +94,7 @@ public class StoreupController extends BaseController {
      * @param storeup 待更新的行为记录信息
      * @return 操作结果
      */
+    @Log(title = "用户行为记录", businessType = BusinessType.UPDATE)
     @PostMapping("/update")
     public AjaxResult updateStoreup(@RequestBody Storeup storeup) {
         return toAjax(storeupService.updateStoreup(storeup));
@@ -102,6 +106,7 @@ public class StoreupController extends BaseController {
      * @param storeupId 待删除的行为记录ID
      * @return 操作结果
      */
+    @Log(title = "用户行为记录", businessType = BusinessType.DELETE)
     @GetMapping("/delete")
     public AjaxResult deleteStoreup(@RequestParam Long storeupId) {
         return toAjax(storeupService.deleteStoreup(storeupId));
@@ -114,6 +119,7 @@ public class StoreupController extends BaseController {
      * @param documentaryId 纪录片ID
      * @return 操作结果
      */
+    @Log(title = "用户收藏", businessType = BusinessType.DELETE)
     @GetMapping("/cancelCollection")
     public AjaxResult cancelCollection(@RequestParam Long userId, @RequestParam Long documentaryId) {
         return toAjax(storeupService.cancelCollection(userId, documentaryId));

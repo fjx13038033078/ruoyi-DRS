@@ -1,7 +1,9 @@
 package com.ruoyi.web.controller.documentary;
 
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.documentary.domain.Documentary;
 import com.ruoyi.documentary.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +81,7 @@ public class RecommendationController extends BaseController {
      *
      * @return 刷新结果
      */
+    @Log(title = "推荐模型", businessType = BusinessType.OTHER)
     @PostMapping("/refreshModel")
     public AjaxResult refreshRecommendationModel() {
         boolean success = recommendationService.refreshRecommendationModel();

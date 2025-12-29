@@ -1,8 +1,10 @@
 package com.ruoyi.web.controller.documentary;
 
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.documentary.domain.Comment;
 import com.ruoyi.documentary.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +81,7 @@ public class CommentController extends BaseController {
      * @param comment 评论信息
      * @return 操作结果
      */
+    @Log(title = "评论管理", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public AjaxResult addComment(@RequestBody Comment comment) {
         boolean success = commentService.addComment(comment);
@@ -95,6 +98,7 @@ public class CommentController extends BaseController {
      * @param comment 评论信息
      * @return 操作结果
      */
+    @Log(title = "评论管理", businessType = BusinessType.UPDATE)
     @PostMapping("/update")
     public AjaxResult updateComment(@RequestBody Comment comment) {
         return toAjax(commentService.updateComment(comment));
@@ -106,6 +110,7 @@ public class CommentController extends BaseController {
      * @param commentId 评论ID
      * @return 操作结果
      */
+    @Log(title = "评论管理", businessType = BusinessType.DELETE)
 //    @PreAuthorize("@ss.hasPermi('documentary:comment:remove')")
     @GetMapping("/delete")
     public AjaxResult deleteComment(@RequestParam Long commentId) {
@@ -118,6 +123,7 @@ public class CommentController extends BaseController {
      * @param commentId 评论ID
      * @return 操作结果
      */
+    @Log(title = "评论管理", businessType = BusinessType.DELETE)
 //    @PreAuthorize("@ss.hasPermi('documentary:comment:remove')")
     @GetMapping("/remove")
     public AjaxResult removeComment(@RequestParam Long commentId) {
@@ -130,6 +136,7 @@ public class CommentController extends BaseController {
      * @param commentId 评论ID
      * @return 操作结果
      */
+    @Log(title = "评论点赞", businessType = BusinessType.UPDATE)
     @PostMapping("/like")
     public AjaxResult likeComment(@RequestParam Long commentId) {
         return toAjax(commentService.likeComment(commentId));

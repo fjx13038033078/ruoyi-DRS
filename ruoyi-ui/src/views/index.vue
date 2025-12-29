@@ -11,59 +11,66 @@
       </div>
     </div>
     <div>
-      <!-- 通知公告 -->
-<!--      <el-row style="margin-top: 10px;">-->
-<!--        <el-col :span="12">-->
-<!--          <el-card style="margin-right: 20px; height: 420px;">-->
-<!--            <h3 slot="header">通知公告</h3>-->
-<!--            <el-table v-loading="loading" :data="noticeList">-->
-<!--              <el-table-column label="序号" align="center" prop="noticeId" width="100"/>-->
-<!--              <el-table-column-->
-<!--                label="公告标题"-->
-<!--                align="center"-->
-<!--                prop="noticeTitle"-->
-<!--                :show-overflow-tooltip="true"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <span @click="showNoticeContent(scope.row)">{{ scope.row.noticeTitle }}</span>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column label="公告类型" align="center" prop="noticeType" width="100">-->
-<!--                <template slot-scope="scope">-->
-<!--                  <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType"/>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column label="创建时间" align="center" prop="createTime" width="100">-->
-<!--                <template slot-scope="scope">-->
-<!--                  <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--            </el-table>-->
-<!--          </el-card>-->
-<!--        </el-col>-->
-<!--        <el-col :span="12">-->
-<!--          <el-card style="margin-right: 20px; height: 420px;">-->
-<!--            <h3 slot="header">经典纪录片</h3>-->
-<!--            <el-carousel :interval="5000" arrow="always">-->
-<!--              <el-carousel-item>-->
-<!--                <a href="https://www.baidu.com" target="_blank">-->
-<!--                  <img src="../assets/images/01.jpg" alt="Image 1" style="width: 100%;">-->
-<!--                </a>-->
-<!--              </el-carousel-item>-->
-<!--              <el-carousel-item>-->
-<!--                <a href="https://www.jd.com" target="_blank">-->
-<!--                  <img src="../assets/images/02.jpg" alt="Image 2" style="width: 100%;">-->
-<!--                </a>-->
-<!--              </el-carousel-item>-->
-<!--              <el-carousel-item>-->
-<!--                <a href="https://www.taobao.com" target="_blank">-->
-<!--                  <img src="../assets/images/03.jpg" alt="Image 3" style="width: 100%;">-->
-<!--                </a>-->
-<!--              </el-carousel-item>-->
-<!--            </el-carousel>-->
-<!--          </el-card>-->
-<!--        </el-col>-->
-<!--      </el-row>-->
+      <el-row style="margin-top: 10px;">
+        <el-col :span="12">
+          <el-card style="margin-right: 20px; height: 420px;">
+            <h3 slot="header">通知公告</h3>
+            <el-table v-loading="loading" :data="noticeList">
+              <el-table-column label="序号" align="center" prop="noticeId" width="100"/>
+              <el-table-column
+                label="公告标题"
+                align="center"
+                prop="noticeTitle"
+                :show-overflow-tooltip="true"
+              >
+                <template slot-scope="scope">
+                  <span @click="showNoticeContent(scope.row)">{{ scope.row.noticeTitle }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="公告类型" align="center" prop="noticeType" width="100">
+                <template slot-scope="scope">
+                  <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType"/>
+                </template>
+              </el-table-column>
+              <el-table-column label="创建时间" align="center" prop="createTime" width="100">
+                <template slot-scope="scope">
+                  <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card style="margin-right: 20px; height: 420px;">
+            <h3 slot="header">经典纪录片</h3>
+            <div v-loading="classicLoading">
+              <el-carousel :interval="5000" arrow="always" height="360px">
+                <el-carousel-item v-for="doc in classicDocumentaries" :key="doc.documentaryId">
+                  <div class="carousel-item-content" @click="openDocumentaryLink(doc)">
+                    <el-image
+                      :src="doc.coverImageUrl || defaultCover"
+                      fit="cover"
+                      class="carousel-image">
+                      <div slot="error">
+                        <el-image :src="defaultCover" fit="cover" class="carousel-image"></el-image>
+                      </div>
+                    </el-image>
+                    <div class="carousel-overlay">
+                      <h3 class="carousel-title">{{ doc.documentaryName }}</h3>
+                    </div>
+                  </div>
+                </el-carousel-item>
+                <!-- 如果没有数据，显示默认轮播 -->
+                <el-carousel-item v-if="classicDocumentaries.length === 0 && !classicLoading">
+                  <div class="carousel-item-content carousel-empty">
+                    <el-empty description="暂无经典纪录片" :image-size="100"></el-empty>
+                  </div>
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
 
       <!-- 推荐区域 -->
       <el-row style="margin-top: 20px;">
@@ -186,6 +193,7 @@
 <script>
 import {listNotice, getNotice} from "@/api/system/notice";
 import { getWatchingNowRecommendations, getTopRatedRecommendations } from "@/api/documentary/recommendation";
+import { listAllDocumentaries } from "@/api/documentary/documentary";
 import {parseTime} from "../utils/ruoyi";
 import defaultCoverImage from '@/assets/images/documentary-background.jpg'
 
@@ -245,11 +253,15 @@ export default {
       watchingNowList: [],
       watchingNowLoading: false,
       topRatedList: [],
-      topRatedLoading: false
+      topRatedLoading: false,
+      // 经典纪录片轮播数据
+      classicDocumentaries: [],
+      classicLoading: false
     };
   },
   created() {
     this.getList();
+    this.loadClassicDocumentaries();
     this.loadWatchingNowRecommendations();
     this.loadTopRatedRecommendations();
   },
@@ -272,6 +284,26 @@ export default {
         this.showNoticeDialog = true;
         this.loading = false;
       });
+    },
+    // 加载经典纪录片（轮播图）
+    loadClassicDocumentaries() {
+      this.classicLoading = true;
+      // 获取评分最高的4部纪录片作为经典纪录片
+      listAllDocumentaries({ pageNum: 1, pageSize: 4, status: 2 }).then(response => {
+        this.classicDocumentaries = response.rows || [];
+        this.classicLoading = false;
+      }).catch(() => {
+        this.classicDocumentaries = [];
+        this.classicLoading = false;
+      });
+    },
+    // 打开纪录片链接
+    openDocumentaryLink(doc) {
+      if (doc.detailUrl) {
+        window.open(doc.detailUrl, '_blank');
+      } else {
+        this.$message.warning('该纪录片暂无详情链接');
+      }
     },
     // 加载"其他人此时在看"推荐
     loadWatchingNowRecommendations() {
@@ -582,5 +614,55 @@ export default {
   display: flex;
   align-items: center;
   gap: 3px;
+}
+
+/* 经典纪录片轮播图样式 */
+.carousel-item-content {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+  padding: 20px;
+}
+
+.carousel-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.carousel-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+::v-deep .el-carousel__arrow {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+::v-deep .el-carousel__arrow:hover {
+  background-color: rgba(0, 0, 0, 0.6);
 }
 </style>
